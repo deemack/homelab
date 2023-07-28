@@ -1,5 +1,5 @@
 # homelab
 * Clone this repo to your Ubuntu Server
-* Execute initialisation.sh
+* Execute setup_environment.sh
 * 
   
