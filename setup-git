@@ -1,0 +1,5 @@
+sudo apt update
+sudo apt install git
+git config --global user.name "dave"
+git config --global user.email "dave@mail"
+git clone https://github.com/deemack/homelab.git
