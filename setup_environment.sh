@@ -7,3 +7,9 @@ git clone https://github.com/deemack/homelab.git
 cd homelab
 vagrant init bento/ubuntu-22.04 
 vagrant up
+printf "%s" "Waiting for virtual machine to be ready"
+while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
+do
+ printf "%c" "."
+done
+printf "\n%s\n" Virtual machine is ready"
