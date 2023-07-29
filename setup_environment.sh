@@ -28,7 +28,7 @@ vagrant up
 printf "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
 while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
 do
- printf "%c" "${YELLOW}.${NC}\n"
+ printf "${YELLOW}.${NC}\n"
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "hostname"
@@ -37,10 +37,10 @@ printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
 
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
-cat <<EOF | sudo tee /home/vagrant/hosts
+sshpass -p vagrant ssh vagrant@192.168.56.10 "cat <<EOF | sudo tee /home/vagrant/hosts
 [homelab]
 192.168.1.100
-EOF
+EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
 ansible -i hosts all -m ping
