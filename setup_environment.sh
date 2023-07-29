@@ -31,7 +31,7 @@ do
  printf "%c" "${YELLOW}.${NC}\n"
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10
+sshpass -p vagrant ssh vagrant@192.168.56.10 'hostname;sudo apt install -y ansible -y'
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sudo apt install -y ansible -y
