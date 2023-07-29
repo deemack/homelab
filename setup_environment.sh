@@ -43,6 +43,6 @@ sshpass -p vagrant ssh vagrant@192.168.56.10 "cat <<EOF | sudo tee /home/vagrant
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
-ansible -i hosts all -m ping
+sshpass -p vagrant ssh vagrant@192.168.56.10 "ansible -i hosts all -m ping"
 
 
