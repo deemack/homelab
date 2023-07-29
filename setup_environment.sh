@@ -14,6 +14,7 @@ sudo apt-get install virtualbox -y
 printf "${GREEN}Installing Vagrant deb package${NC}\n"
 wget https://releases.hashicorp.com/vagrant/2.2.19/vagrant_2.2.19_x86_64.deb
 sudo apt install ./vagrant_2.2.19_x86_64.deb
+sudo rm ./vagrant_2.2.19_x86_64.deb
 
 printf "${GREEN}Installing sshpass${NC}\n"
 sudo apt-get install sshpass -y
