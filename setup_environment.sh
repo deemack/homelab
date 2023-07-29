@@ -12,4 +12,4 @@ while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
 do
  printf "%c" "."
 done
-printf "\n%s\n" Virtual machine is ready"
+printf "\n%s\n" "Virtual machine is ready"
