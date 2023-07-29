@@ -15,6 +15,9 @@ printf "${GREEN}Installing Vagrant deb package${NC}\n"
 wget https://releases.hashicorp.com/vagrant/2.2.19/vagrant_2.2.19_x86_64.deb
 sudo apt install ./vagrant_2.2.19_x86_64.deb
 
+printf "${GREEN}Installing sshpass${NC}\n"
+sudo apt-get install sshpass -y
+
 printf "${GREEN}Cloning homelab repository${NC}\n"
 git clone https://github.com/deemack/homelab.git
 
@@ -27,3 +30,18 @@ do
  printf "%c" "${YELLOW}.${NC}\n"
 done
 printf "\n%s\n" "${GREEN}Virtual machine is ready${NC}\n"
+sshpass -p vagrant ssh vagrant@192.168.56.10
+
+printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
+sudo apt install -y ansible -y
+
+printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
+cat <<EOF | sudo tee /home/vagrant/hosts
+[homelab]
+192.168.1.100
+EOF
+
+printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
+ansible -i hosts all -m ping
+
+
