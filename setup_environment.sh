@@ -24,12 +24,12 @@ git clone https://github.com/deemack/homelab.git
 printf "${GREEN}Creating Anisble VM with vagrant${NC}\n"
 cd homelab
 vagrant up
-printf "%s" "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
+printf "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
 while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
 do
  printf "%c" "${YELLOW}.${NC}\n"
 done
-printf "\n%s\n" "${GREEN}Virtual machine is ready${NC}\n"
+printf "${GREEN}Virtual machine is ready${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
