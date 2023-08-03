@@ -5,6 +5,13 @@ YELLOW='\033[1;33m'
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
+printf "${GREEN}Creating vagrant user${NC}\n"
+sudo useradd -p $(openssl passwd -1 vagrant) vagrant
+
+printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
+mkdir /home/vagrant/.ssh
+yes '' | ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
+
 printf "${GREEN}Installing git${NC}\n"
 sudo apt install git -y
 
