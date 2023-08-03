@@ -29,9 +29,6 @@ yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
 printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
 
-printf "${GREEN}Cloning homelab repository${NC}\n"
-git clone https://github.com/deemack/homelab.git
-
 printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
 cd homelab
 vagrant up
