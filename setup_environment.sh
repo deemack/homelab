@@ -22,12 +22,14 @@ sudo rm ./vagrant_2.2.19_x86_64.deb
 printf "${GREEN}Creating vagrant user${NC}\n"
 sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
 
-printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
+printf "${GREEN}Creating ssh key-pair for vagrant user on beelink${NC}\n"
 sudo mkdir /home/vagrant/.ssh
 yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
+sudo touch /home/vagrant/.ssh/known_hosts
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
+sudo chmod 600 /home/vagrant/.ssh/known_hosts
 
 printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
@@ -48,7 +50,7 @@ sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.
 
 printf "${GREEN}Copying virtual machine public key file content to known hosts file on beelink${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
-sudo cat /vagrant/vm-ssh-key.pub >> /home/vagrant/.ssh/known_hosts
+sudo cat ./vm-ssh-key.pub >> /home/vagrant/.ssh/known_hosts
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
