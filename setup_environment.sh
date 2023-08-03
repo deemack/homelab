@@ -10,7 +10,7 @@ sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
 
 printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
 sudo mkdir /home/vagrant/.ssh
-sudo yes '' | ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
+yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
 
 printf "${GREEN}Installing git${NC}\n"
 sudo apt install git -y
