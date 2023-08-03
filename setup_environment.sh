@@ -29,7 +29,7 @@ sudo apt-get install sshpass -y
 printf "${GREEN}Cloning homelab repository${NC}\n"
 git clone https://github.com/deemack/homelab.git
 
-printf "${GREEN}Creating Anisble VM with vagrant${NC}\n"
+printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
 cd homelab
 vagrant up
 printf "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
