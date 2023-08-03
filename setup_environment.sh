@@ -25,7 +25,7 @@ sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
 printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
 sudo mkdir /home/vagrant/.ssh
 yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
-sudo chown -R vagrant:vagrant /home/vagrant..ssh
+sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 
