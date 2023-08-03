@@ -5,12 +5,8 @@ YELLOW='\033[1;33m'
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
-printf "${GREEN}Creating vagrant user${NC}\n"
-sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
-
-printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
-sudo mkdir /home/vagrant/.ssh
-yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
+printf "${GREEN}Installing sshpass${NC}\n"
+sudo apt-get install sshpass -y
 
 printf "${GREEN}Installing git${NC}\n"
 sudo apt install git -y
@@ -23,8 +19,18 @@ wget https://releases.hashicorp.com/vagrant/2.2.19/vagrant_2.2.19_x86_64.deb
 sudo apt install ./vagrant_2.2.19_x86_64.deb
 sudo rm ./vagrant_2.2.19_x86_64.deb
 
-printf "${GREEN}Installing sshpass${NC}\n"
-sudo apt-get install sshpass -y
+printf "${GREEN}Creating vagrant user${NC}\n"
+sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
+
+printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
+sudo mkdir /home/vagrant/.ssh
+yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
+
+printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
+sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
+
+printf "${GREEN}Copying public key from shared folder to virtual machine${NC}\n"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /vagrant/beelink-ssh-key.pub /home/vagrant/.ssh/beelink-ssh-key.pub"
 
 printf "${GREEN}Cloning homelab repository${NC}\n"
 git clone https://github.com/deemack/homelab.git
