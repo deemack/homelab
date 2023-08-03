@@ -26,6 +26,7 @@ printf "${GREEN}Creating ssh key-pair for vagrant user on beelink${NC}\n"
 sudo mkdir /home/vagrant/.ssh
 yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
 sudo touch /home/vagrant/.ssh/known_hosts
+sudo touch /home/vagrant/.ssh/authorized_keys
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
