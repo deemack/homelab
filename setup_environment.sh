@@ -40,8 +40,8 @@ done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "hostname"
 
-printf "${GREEN}Copying public key from shared folder to virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /vagrant/beelink-ssh-key.pub /home/vagrant/.ssh/beelink-ssh-key.pub"
+printf "${GREEN}Copying public key file contents to virtual machine authorized_keys file${NC}\n"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/authorized_keys"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
