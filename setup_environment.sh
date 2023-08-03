@@ -29,9 +29,6 @@ yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
 printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
 
-printf "${GREEN}Copying public key from shared folder to virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /vagrant/beelink-ssh-key.pub /home/vagrant/.ssh/beelink-ssh-key.pub"
-
 printf "${GREEN}Cloning homelab repository${NC}\n"
 git clone https://github.com/deemack/homelab.git
 
@@ -45,6 +42,9 @@ do
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "hostname"
+
+printf "${GREEN}Copying public key from shared folder to virtual machine${NC}\n"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /vagrant/beelink-ssh-key.pub /home/vagrant/.ssh/beelink-ssh-key.pub"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
