@@ -6,7 +6,7 @@ printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
 printf "${GREEN}Creating vagrant user${NC}\n"
-sudo useradd -p $(openssl passwd -1 vagrant) vagrant
+sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
 
 printf "${GREEN}Creating ssh key-pair for vagrant user${NC}\n"
 mkdir /home/vagrant/.ssh
