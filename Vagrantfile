@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
     ansible.vm.box = "bento/ubuntu-22.04"
     ansible.vm.network :private_network, ip: "192.168.56.10"
     ansible.vm.provision :shell, privileged: false, path: "provision_vm.sh"
-  config.vm.synced_folder ".", "/vagrant"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"
 end 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
