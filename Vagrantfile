@@ -11,7 +11,8 @@ Vagrant.configure(2) do |config|
     ansible.vm.hostname = 'ansible'
     ansible.vm.box = "bento/ubuntu-22.04"
     ansible.vm.network :private_network, ip: "192.168.56.10"
-    ansible.vm.provision :shell, privileged: false, path: "provision_vm.sh"	
+    ansible.vm.provision :shell, privileged: false, path: "provision_vm.sh"
+  config.vm.synced_folder ".", "/vagrant"
 end 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -25,7 +26,7 @@ end
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
-
+  
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
