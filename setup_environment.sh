@@ -30,8 +30,8 @@ printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
 
 printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
-cd homelab
 vagrant up
+
 printf "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
 while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
 do
