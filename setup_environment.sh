@@ -27,13 +27,9 @@ sudo useradd -s /bin/bash -m -p $(openssl passwd -1 vagrant) vagrant
 printf "${GREEN}Creating ssh key-pair for vagrant user on beelink${NC}\n"
 sudo mkdir /home/vagrant/.ssh
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
-#yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/id_rsa -N '' > /dev/null
 sudo -u vagrant bash -c "ssh-keygen -f ~/.ssh/id_rsa -N ''"
 sudo touch /home/vagrant/.ssh/known_hosts
 sudo touch /home/vagrant/.ssh/authorized_keys
-#printf "${GREEN}Adding ssh key to the ssh-agent${NC}\n"
-#eval "$(ssh-agent -s)"
-#sudo ssh-add /home/vagrant/.ssh/beelink-ssh-key
 
 printf "${GREEN}Copying public key from host to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/id_rsa.pub .
@@ -47,24 +43,20 @@ do
  printf "${YELLOW}.${NC}\n"
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "hostname"
 
 printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
 sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
 printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
-#sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/known_hosts"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "ssh-keyscan -H -p 22 -t ecdsa $BEELINK >> ~/.ssh/known_hosts"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "ssh-keyscan -H -p 22 -t ecdsa $BEELINK >> ~/.ssh/known_hosts" >/dev/null
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
-#sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
 sshpass -p vagrant scp vagrant@$ANSIBLE_VM:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
-#cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
-ssh-keyscan -H -p 22 -t ecdsa $ANSIBLE_VM | sudo tee -a /home/vagrant/.ssh/known_hosts
+ssh-keyscan -H -p 22 -t ecdsa $ANSIBLE_VM | sudo tee -a /home/vagrant/.ssh/known_hosts >/dev/null
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
-cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
+cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys >/dev/null
 
 
 printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
