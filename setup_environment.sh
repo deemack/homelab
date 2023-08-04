@@ -57,15 +57,15 @@ printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
 printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
-sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa beelink >> ~/.ssh/known_hosts" >/dev/null
+sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa beelink >> ~/.ssh/known_hosts"
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
 sshpass -p vagrant scp vagrant@ansible:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
-ssh-keyscan -H -p 22 -t ecdsa ansible | sudo tee -a /home/vagrant/.ssh/known_hosts >/dev/null
+ssh-keyscan -H -p 22 -t ecdsa ansible | sudo tee -a /home/vagrant/.ssh/known_hosts
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
-cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys >/dev/null
+cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
 
 
 printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
