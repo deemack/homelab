@@ -57,6 +57,7 @@ sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 sudo chmod 600 /home/vagrant/.ssh/known_hosts
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
