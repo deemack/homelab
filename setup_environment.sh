@@ -29,6 +29,9 @@ sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo -u vagrant bash -c "ssh-keygen -f ~/.ssh/beelink-ssh-key -N ''"
 sudo touch /home/vagrant/.ssh/known_hosts
 sudo touch /home/vagrant/.ssh/authorized_keys
+printf "${GREEN}Adding ssh key to the ssh-agent${NC}\n"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/beelink-ssh-key
 
 printf "${GREEN}Copying public key from host to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
