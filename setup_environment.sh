@@ -56,7 +56,8 @@ sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/id_rsa.pub ./vm-
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
-cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
+#cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
+ssh-keyscan -H -p 22 -t ecdsa 192.168.56.10 | sudo tee -a /home/vagrant/.ssh/known_hosts
 
 printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
 printf "${GREEN}Beelink${NC}\n"
