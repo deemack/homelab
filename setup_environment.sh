@@ -51,7 +51,7 @@ sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
 #sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
-sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/vm-ssh-key.pub .
+sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
