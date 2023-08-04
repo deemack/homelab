@@ -28,8 +28,7 @@ yes '' | sudo ssh-keygen -f /home/vagrant/.ssh/beelink-ssh-key -N '' > /dev/null
 sudo touch /home/vagrant/.ssh/known_hosts
 sudo touch /home/vagrant/.ssh/authorized_keys
 
-
-printf "${GREEN}Copying public key to shared vagrant folder${NC}\n"
+printf "${GREEN}Copying public key from host to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/beelink-ssh-key.pub .
 
 printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
@@ -43,22 +42,32 @@ done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "hostname"
 
+printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/authorized_keys"
+printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/known_hosts"
 
+printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
-sshpass -p vagrant scp vagrant@192.168.56.10:/vagrant/vm-ssh-key.pub .
-
-printf "${GREEN}Copying virtual machine public key file content to known hosts and authorized_keys file on beelink${NC}\n"
+#sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
+sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/id_rsa.pub .
+printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
+printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
 
+printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
+printf "${GREEN}Beelink${NC}\n"
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 sudo chmod 600 /home/vagrant/.ssh/known_hosts
+printf "${GREEN}VM${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 700 /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
+sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
