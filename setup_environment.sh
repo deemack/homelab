@@ -2,6 +2,8 @@
 NC='\033[0m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BEELINK="192.168.1.100"
+ANSIBLE_VM="192.168.56.10"
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
@@ -40,27 +42,27 @@ printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
 vagrant up
 
 printf "${YELLOW}Waiting for virtual machine to be ready${NC}\n"
-while ! ping -c 1 -n -w 1 192.168.56.10 &> /dev/null
+while ! ping -c 1 -n -w 1 $ANSIBLE_VM &> /dev/null
 do
  printf "${YELLOW}.${NC}\n"
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "hostname"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "hostname"
 
 printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/authorized_keys"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/authorized_keys"
 printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
-#sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/known_hosts"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "ssh-keyscan -H -p 22 -t ecdsa 192.168.1.100 >> ~/.ssh/known_hosts"
+#sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cat /vagrant/beelink-ssh-key.pub >> /home/vagrant/.ssh/known_hosts"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "ssh-keyscan -H -p 22 -t ecdsa $BEELINK >> ~/.ssh/known_hosts"
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
-#sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
-sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
+#sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cp /home/vagrant/.ssh/id_rsa.pub /vagrant/vm-ssh-key.pub"
+sshpass -p vagrant scp vagrant@$ANSIBLE_VM:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
 #cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
-ssh-keyscan -H -p 22 -t ecdsa 192.168.56.10 | sudo tee -a /home/vagrant/.ssh/known_hosts
+ssh-keyscan -H -p 22 -t ecdsa $ANSIBLE_VM | sudo tee -a /home/vagrant/.ssh/known_hosts
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys
 
@@ -72,18 +74,18 @@ sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 sudo chmod 600 /home/vagrant/.ssh/known_hosts
 printf "${GREEN}VM${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 700 /home/vagrant/.ssh"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 700 /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo apt-get install -y ansible -y"
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo apt-get install -y ansible -y"
 
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "cat <<EOF | sudo tee /home/vagrant/hosts
+sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "cat <<EOF | sudo tee /home/vagrant/hosts
 [homelab]
-192.168.1.100
+$BEELINK
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
