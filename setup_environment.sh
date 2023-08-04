@@ -61,7 +61,7 @@ sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa beelink >>
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
-sshpass -p vagrant scp vagrant@ansible:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
+sshpass -p vagrant scp vagrant@192.168.56.10:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
 ssh-keyscan -H -p 22 -t ecdsa ansible | sudo tee -a /home/vagrant/.ssh/known_hosts
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
@@ -90,6 +90,6 @@ $BEELINK
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "ansible -i hosts all -m ping"
+sshpass -p vagrant ssh vagrant@ansible "ansible -i hosts all -m ping"
 
 
