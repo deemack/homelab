@@ -20,7 +20,7 @@ sudo apt install ./vagrant_2.2.19_x86_64.deb
 sudo rm ./vagrant_2.2.19_x86_64.deb
 
 printf "${GREEN}Creating vagrant user${NC}\n"
-sudo useradd -m -p $(openssl passwd -1 vagrant) vagrant
+sudo useradd -s /bin/bash -m -p $(openssl passwd -1 vagrant) vagrant
 
 printf "${GREEN}Creating ssh key-pair for vagrant user on beelink${NC}\n"
 sudo mkdir /home/vagrant/.ssh
