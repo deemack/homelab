@@ -51,7 +51,7 @@ sshpass -p vagrant ssh vagrant@192.168.56.10 "sudo cp /home/vagrant/.ssh/id_rsa.
 sshpass -p vagrant scp vagrant@192.168.56.10:/vagrant/vm-ssh-key.pub .
 
 printf "${GREEN}Copying virtual machine public key file content to known hosts file on beelink${NC}\n"
-sudo cat ./vm-ssh-key.pub >> /home/vagrant/.ssh/known_hosts
+cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/known_hosts
 
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
 sudo chmod 700 /home/vagrant/.ssh
