@@ -24,7 +24,7 @@ printf "${GREEN}Installing virtualbox${NC}\n"
 sudo apt-get install virtualbox -y
 
 printf "${GREEN}Installing Vagrant deb package${NC}\n"
-wget https://releases.hashicorp.com/vagrant/${VAGRANT_MAJOR}/vagrant-${VAGRANT_VER}_amd64.deb
+wget https://releases.hashicorp.com/vagrant/${VAGRANT_MAJOR}/vagrant_${VAGRANT_VER}_amd64.deb
 sudo apt install ./vagrant_${VAGRANT_VER}_amd64.deb
 sudo rm ./vagrant_${VAGRANT_VER}_amd64.deb
 
