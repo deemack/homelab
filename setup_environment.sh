@@ -6,8 +6,8 @@ BEELINK="192.168.1.100"
 ANSIBLE_VM="192.168.56.10"
 
 printf "${GREEN}Updating hosts file on Beelink${NC}\n"
-echo "192.168.56.10 ansible" | sudo tee -a /etc/hosts
-echo "192.168.1.100 beelink" | sudo tee -a /etc/hosts
+echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
+echo "$BEELINK beelink" | sudo tee -a /etc/hosts
 
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
@@ -90,4 +90,4 @@ beelink
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
-sshpass -p vagrant ssh vagrant@192.168.56.10 "ansible -i hosts all -m ping"
+sshpass -p vagrant ssh vagrant@ansible "ansible -i hosts all -m ping"
