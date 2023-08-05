@@ -86,7 +86,7 @@ sshpass -p vagrant ssh vagrant@ansible "sudo apt-get install -y ansible -y"
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "cat <<EOF | sudo tee /home/vagrant/hosts
 [homelab]
-$BEELINK
+beelink
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
