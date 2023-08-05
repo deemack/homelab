@@ -4,7 +4,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BEELINK="192.168.1.100"
 ANSIBLE_VM="192.168.56.10"
-VAGRANT_MAJOR="3.7.1"
+VAGRANT_MAJOR="2.3.7"
 VAGRANT_VER="$VAGRANT_MAJOR-1"
 
 printf "${GREEN}Updating hosts file on Beelink${NC}\n"
@@ -24,9 +24,9 @@ printf "${GREEN}Installing virtualbox${NC}\n"
 sudo apt-get install virtualbox -y
 
 printf "${GREEN}Installing Vagrant deb package${NC}\n"
-wget https://releases.hashicorp.com/vagrant/$VAGRANT_MAJOR/vagrant-$VAGRANT_VER_x86_64.deb
-sudo apt install ./vagrant_$VAGRANT_VER_x86_64.deb
-sudo rm ./vagrant_$VAGRANT_VER_x86_64.deb
+wget https://releases.hashicorp.com/vagrant/${VAGRANT_MAJOR}/vagrant-${VAGRANT_VER}_x86_64.deb
+sudo apt install ./vagrant_${VAGRANT_VER}_x86_64.deb
+sudo rm ./vagrant_${VAGRANT_VER}_x86_64.deb
 
 printf "${GREEN}Creating vagrant user${NC}\n"
 sudo useradd -s /bin/bash -m -p $(openssl passwd -1 vagrant) vagrant
