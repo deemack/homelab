@@ -50,8 +50,8 @@ done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 
 printf "${GREEN}Updating hosts file on VM${NC}\n"
-echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
-echo "$BEELINK beelink" | sudo tee -a /etc/hosts
+sshpass -p vagrant ssh vagrant@ansible "echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts"
+sshpass -p vagrant ssh vagrant@ansible "echo "$BEELINK beelink" | sudo tee -a /etc/hosts"
 
 printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
