@@ -4,6 +4,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BEELINK="192.168.1.100"
 ANSIBLE_VM="192.168.56.10"
+
+printf "${GREEN}Updating hosts file on Beelink${NC}\n"
+echo "192.168.56.10 ansible" | sudo tee -a /etc/hosts
+echo "192.168.1.100 beelink" | sudo tee -a /etc/hosts
+
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
@@ -44,17 +49,21 @@ do
 done
 printf "${GREEN}Virtual machine is ready${NC}\n"
 
+printf "${GREEN}Updating hosts file on VM${NC}\n"
+echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
+echo "$BEELINK beelink" | sudo tee -a /etc/hosts
+
 printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
+sshpass -p vagrant ssh vagrant@ansible "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
 printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "ssh-keyscan -H -p 22 -t ecdsa $BEELINK >> ~/.ssh/known_hosts" >/dev/null
+sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa beelink >> ~/.ssh/known_hosts" >/dev/null
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
-sshpass -p vagrant scp vagrant@$ANSIBLE_VM:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
+sshpass -p vagrant scp vagrant@ansible:/home/vagrant/.ssh/id_rsa.pub ./vm-ssh-key.pub
 printf "${GREEN}Copying virtual machine public key file content to known_hosts file ${NC}\n"
-ssh-keyscan -H -p 22 -t ecdsa $ANSIBLE_VM | sudo tee -a /home/vagrant/.ssh/known_hosts >/dev/null
+ssh-keyscan -H -p 22 -t ecdsa ansible | sudo tee -a /home/vagrant/.ssh/known_hosts >/dev/null
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys >/dev/null
 
@@ -66,16 +75,16 @@ sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 sudo chmod 600 /home/vagrant/.ssh/known_hosts
 printf "${GREEN}VM${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 700 /home/vagrant/.ssh"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
+sshpass -p vagrant ssh vagrant@ansible "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@ansible "sudo chmod 700 /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
+sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "sudo apt-get install -y ansible -y"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt-get install -y ansible -y"
 
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@$ANSIBLE_VM "cat <<EOF | sudo tee /home/vagrant/hosts
+sshpass -p vagrant ssh vagrant@ansible "cat <<EOF | sudo tee /home/vagrant/hosts
 [homelab]
 $BEELINK
 EOF"
