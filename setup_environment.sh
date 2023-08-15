@@ -14,6 +14,9 @@ echo "$BEELINK beelink" | sudo tee -a /etc/hosts
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
+printf "${GREEN}Installing python${NC}\n"
+sudo apt-get install python3 -y
+
 printf "${GREEN}Installing sshpass${NC}\n"
 sudo apt-get install sshpass -y
 
