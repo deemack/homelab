@@ -4,4 +4,3 @@
     name: microk8s
     classic: true
     channel: '1.27'
-  
