@@ -4,8 +4,22 @@
     name: microk8s
     classic: true
     channel: '1.27'
+    
 - name: Ubuntu | Join vagrant user to microk8s group
   user:
      name: vagrant
      groups: microk8s
      append: yes
+     
+- name: Create kubectl alias for microk8s
+  community.general.snap_alias:
+    name: microk8s
+    alias: kubectl
+    
+- name: enable dns addon
+  command:
+    cmd: kubectl enable dns
+    
+- name: enable hostpath-storage addon
+  command:
+    cmd: kubectl enable hostpath-storage
