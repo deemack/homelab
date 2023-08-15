@@ -74,12 +74,12 @@ cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys >/dev/null
 
 printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
 printf "${GREEN}Beelink${NC}\n"
-sudo chown -R vagrant:vagrant /home/vagrant/.ssh
+sudo chown -R vagrant:vagrant /home/vagrant/
 sudo chmod 700 /home/vagrant/.ssh
 sudo chmod 600 /home/vagrant/.ssh/authorized_keys
 sudo chmod 600 /home/vagrant/.ssh/known_hosts
 printf "${GREEN}VM${NC}\n"
-sshpass -p vagrant ssh vagrant@ansible "sudo chown -R vagrant:vagrant /home/vagrant/.ssh"
+sshpass -p vagrant ssh vagrant@ansible "sudo chown -R vagrant:vagrant /home/vagrant/"
 sshpass -p vagrant ssh vagrant@ansible "sudo chmod 700 /home/vagrant/.ssh"
 sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/authorized_keys"
 sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/known_hosts"
