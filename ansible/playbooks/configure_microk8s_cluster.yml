@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 - name: Configure MicroK8s Cluster
   hosts: beelink
@@ -6,6 +5,3 @@
   gather_facts: yes
   roles:
     - microk8s_cluster
-=======
-
->>>>>>> 014f07f08ab1155ebdcfb41d97b93d1f102b38ee
