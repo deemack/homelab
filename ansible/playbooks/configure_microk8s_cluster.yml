@@ -1,0 +1,7 @@
+---
+- name: Configure MicroK8s Cluster
+  hosts: beelink
+  become: true
+  gather_facts: yes
+  roles:
+    - microk8s_cluster

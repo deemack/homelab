@@ -1,0 +1,7 @@
+---
+- name: Ubuntu | Install MicroK8s using snap
+  commnunity.general.snap:
+    name: microk8s
+    classic: true
+    channel: '1.27'
+  
