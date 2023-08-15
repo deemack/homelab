@@ -72,7 +72,6 @@ ssh-keyscan -H -p 22 -t ecdsa ansible | sudo tee -a /home/vagrant/.ssh/known_hos
 printf "${GREEN}Copying virtual machine public key file content to authorized_keys file${NC}\n"
 cat ./vm-ssh-key.pub | sudo tee -a /home/vagrant/.ssh/authorized_keys >/dev/null
 
-
 printf "${YELLOW}Setting ssh key ownerships and permissions${NC}\n"
 printf "${GREEN}Beelink${NC}\n"
 sudo chown -R vagrant:vagrant /home/vagrant/.ssh
@@ -87,6 +86,9 @@ sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/known_
 
 printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "sudo apt-get install -y ansible -y"
+
+printf "${GREEN}Copy ansible folder from shared folder to home directory${NC}\n"
+sshpass -p vagrant ssh vagrant@ansible "sudo cp -r /vagrant/ansible ."
 
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "cat <<EOF | sudo tee /home/vagrant/hosts
