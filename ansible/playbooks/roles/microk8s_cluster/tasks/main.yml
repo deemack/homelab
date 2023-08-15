@@ -27,3 +27,23 @@
 - name: enable dashboard addon
   command:
     cmd: kubectl enable dashboard
+
+- name: enable ingress addon
+  command:
+    cmd: kubectl enable ingress
+    
+- name: enable host-access addon
+  command:
+    cmd: kubectl enable host-access
+
+- name: Change kubernetes-dashboard service to NodePort
+  command:
+    cmd: microk8s kubectl patch -n kube-system svc kubernetes-dashboard -p '{"spec": {"type": "NodePort"}}'
+
+- name: Get port that kubernetes-dashboard service is using
+  command:
+    cmd: microk8s kubectl -n kube-system get services kubernetes-dashboard
+  register: kubernetes-dashboard-port
+- debug: msg="{{ kubernetes-dashboard-port.stdout }}"
+- debug: msg="{{ kubernetes-dashboard-port.stderr }}"
+    
