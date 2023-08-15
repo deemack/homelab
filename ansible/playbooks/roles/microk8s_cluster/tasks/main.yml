@@ -1,4 +1,9 @@
 ---
+- name: install pre-requisites
+  pip:
+    name:
+      - kubernetes
+      
 - name: Ubuntu | Install MicroK8s using snap
   community.general.snap:
     name: microk8s
@@ -35,15 +40,32 @@
 - name: enable host-access addon
   command:
     cmd: kubectl enable host-access
-
+    
 - name: Change kubernetes-dashboard service to NodePort
-  command:
-    cmd: microk8s kubectl patch -n kube-system svc kubernetes-dashboard -p '{"spec": {"type": "NodePort"}}'
+  kubernetes.core.k8s_service:
+    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    state: present
+    name: kubernetes-dashboard
+    namespace: kube-system
+    inline:
+      spec:
+        clusterIP: 10.152.183.85
+        clusterIPs:
+        - 10.152.183.85
+        externalTrafficPolicy: Cluster
+        internalTrafficPolicy: Cluster
+        ipFamilies:
+        - IPv4
+        ipFamilyPolicy: SingleStack
+        ports:
+        - nodePort: 32075
+          port: 443
+          protocol: TCP
+          targetPort: 8443
+        selector:
+          k8s-app: kubernetes-dashboard
+        sessionAffinity: None
+        type: NodePort
 
-- name: Get port that kubernetes-dashboard service is using
-  command:
-    cmd: microk8s kubectl -n kube-system get services kubernetes-dashboard
-  register: kubernetes-dashboard-port
-- debug: msg="{{ kubernetes-dashboard-port.stdout }}"
-- debug: msg="{{ kubernetes-dashboard-port.stderr }}"
+
     
