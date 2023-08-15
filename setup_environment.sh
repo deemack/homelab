@@ -87,8 +87,12 @@ sshpass -p vagrant ssh vagrant@ansible "sudo chmod 600 /home/vagrant/.ssh/known_
 printf "${GREEN}Updating and Upgrading Linux on VM${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "sudo apt update && sudo apt upgrade -y"
 
-printf "${GREEN}Installing Ansible to virtual machine${NC}\n"
-sshpass -p vagrant ssh vagrant@ansible "sudo apt-get install ansible -y"
+printf "${GREEN}Upgrading Linux and installing latest Ansible to virtual machine${NC}\n"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt remove ansible -y"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt --purge autoremove -y"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt -y install software-properties-common -y"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt-add-repository ppa:ansible/ansible -y"
+sshpass -p vagrant ssh vagrant@ansible "sudo apt install ansible -y"
 
 printf "${GREEN}Installing ansible-galaxy collection: community.general${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "ansible-galaxy collection install community.general"
