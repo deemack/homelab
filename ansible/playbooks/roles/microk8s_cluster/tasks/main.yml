@@ -4,3 +4,8 @@
     name: microk8s
     classic: true
     channel: '1.27'
+- name: Ubuntu | Join vagrant user to microk8s group
+  user:
+     name: vagrant
+     groups: microk8s
+     append: yes
