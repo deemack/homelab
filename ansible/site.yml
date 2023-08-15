@@ -1,0 +1,2 @@
+---
+- import_playbook: configure_microk8s_cluster.yml
