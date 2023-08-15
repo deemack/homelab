@@ -49,9 +49,6 @@
     namespace: kube-system
     inline:
       spec:
-        clusterIP: 10.152.183.85
-        clusterIPs:
-        - 10.152.183.85
         externalTrafficPolicy: Cluster
         internalTrafficPolicy: Cluster
         ipFamilies:
