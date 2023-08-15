@@ -23,3 +23,7 @@
 - name: enable hostpath-storage addon
   command:
     cmd: kubectl enable hostpath-storage
+    
+- name: enable dashboard addon
+  command:
+    cmd: kubectl enable dashboard
