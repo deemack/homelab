@@ -1,0 +1,11 @@
+---
+- name: Create mount points on MicroK8s Node | Movies
+ansible.builtin.file:
+  path: /mnt/storage/Movies
+  state: directory
+  mode: '0755'
+- name: Create mount points on MicroK8s Node | TV
+ansible.builtin.file:
+  path: /mnt/storage/TV
+  state: directory
+  mode: '0755'
