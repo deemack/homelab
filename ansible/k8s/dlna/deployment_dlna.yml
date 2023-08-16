@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dlna
+  namespace: dlna-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dlna-server
+  template:
+    metadata:
+      labels:
+        app: dlna-server
+    spec:
+      hostNetwork: true                                       # A
+      terminationGracePeriodSeconds: 0                        # B
+      containers:
+        - name: dlna
+          # C
+          image: vladgh/minidlna@sha256:2db31fc03986a82bf097b900ebd8f2f801f4dcd2727979a91dbcba3a5a3c6f7e
+          ports:
+            - containerPort: 8200
+          env:
+            - name: MINIDLNA_MEDIA_DIR
+              value: /media
+            - name: MINIDLNA_FRIENDLY_NAME
+              value: MediaLibrary
+          volumeMounts:
+            - name: dlna-data
+              mountPath: /media
+      volumes:
+        - name: dlna-data
+          persistentVolumeClaim:
+            claimName: dlna-data
