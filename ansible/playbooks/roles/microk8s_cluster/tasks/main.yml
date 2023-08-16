@@ -43,7 +43,7 @@
     
 - name: Change kubernetes-dashboard service to NodePort
   kubernetes.core.k8s_service:
-    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     name: kubernetes-dashboard
     namespace: kube-system
