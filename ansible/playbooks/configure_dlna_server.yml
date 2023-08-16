@@ -1,0 +1,7 @@
+---
+- name: Configure DLNA Server
+  hosts: beelink
+  become: true
+  gather_facts: yes
+  roles:
+    - microk8s_dlna
