@@ -13,7 +13,7 @@
 
 - name: Create dlna namespace
   kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
     name: dlna-ns
     api_version: v1
     kind: Namespace
@@ -39,21 +39,21 @@
 
 - name: Create Persistent Volume
   kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: dlna-ns
     src: /tmp/pv_dlna.yml
 
 - name: Create Persistent Volume Claim
   kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: dlna-ns
     src: /tmp/pvc_dlna.yml
 
 - name: Create Deployment
   kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/5643/credentials/client.config
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: dlna-ns
     src: /tmp/deployment_dlna.yml
