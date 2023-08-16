@@ -4,12 +4,16 @@
     path: /mnt/storage/Movies
     state: directory
     mode: '0755'
+    owner: nobody
+    group: nogroup
 
 - name: Create mount points on MicroK8s Node | TV
   ansible.builtin.file:
     path: /mnt/storage/TV
     state: directory
     mode: '0755'
+    owner: nobody
+    group: nogroup
 
 - name: Create dlna namespace
   kubernetes.core.k8s:
