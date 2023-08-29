@@ -30,3 +30,5 @@ site.yml
 * Navigate to \<ServerIP>:32075
 * Use the token to log in
 
+* You can also save this **cat /var/snap/microk8s/current/credentials/client.config** to file and use it to login as a **kubeconfig**
+
