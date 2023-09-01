@@ -5,7 +5,16 @@
 ----
       git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x setup_environment.sh && bash setup_environment.sh
 ----
-
+* Once the installation has completed, run the following commands:
+----
+      sudo apt install python3-pip -y
+      sudo usermod -aG sudo vagrant
+      su vagrant
+      ssh vagrant@ansible
+      cd ansible
+      ansible-playbook -i inventory playbooks/site.yml
+----
+      
 ### Notes
 - The ansible VM is set to have an IP of 192.168.56.10
 - It is assumed the Server has an IP of 192.168.1.100
