@@ -16,6 +16,9 @@ printf "${GREEN}Updating hosts file on Beelink${NC}\n"
 echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
 echo "$BEELINK beelink" | sudo tee -a /etc/hosts
 
+printf "${GREEN}Updating known_hosts file on Beelink${NC}\n"
+ssh-keyscan -H -p 22 -t ecdsa ansible >> /home/dave/.ssh/known_hosts
+
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
 
