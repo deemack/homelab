@@ -15,6 +15,20 @@
       ansible-playbook -i inventory playbooks/site.yml
       sudo usermod -a -G microk8s dave
       newgrp microk8s
+      sudo apt-get install samba -y
+      sudo nano /etc/samba/smb.conf
+      add these lines to smb.conf
+[sharedfolder]
+  path = /mnt/storage
+  writeable = yes
+  browseable = yes
+  public = yes
+  create mask = 0644
+  directory mask = 0755
+  force user = shareuser
+
+  sudo service smbd restart
+      
 ----
       
 ### Notes
