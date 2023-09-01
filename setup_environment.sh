@@ -7,6 +7,11 @@ ANSIBLE_VM="192.168.56.10"
 VAGRANT_MAJOR="2.3.7"
 VAGRANT_VER="$VAGRANT_MAJOR-1"
 
+printf "${GREEN}Add entry to fstab for SSD${NC}\n"
+uuid=$(lsblk -no uuid /dev/sda)
+fstab_entry="UUID=""$uuid"" /mnt/storage ntfs permissions,locale=en_US.utf8 0 2"
+echo $fstab_entry | sudo tee -a /etc/fstab
+
 printf "${GREEN}Updating hosts file on Beelink${NC}\n"
 echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
 echo "$BEELINK beelink" | sudo tee -a /etc/hosts
