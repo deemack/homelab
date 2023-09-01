@@ -13,6 +13,8 @@
       ssh vagrant@ansible
       cd ansible
       ansible-playbook -i inventory playbooks/site.yml
+      sudo usermod -a -G microk8s dave
+      newgrp microk8s
 ----
       
 ### Notes
