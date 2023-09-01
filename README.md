@@ -19,14 +19,15 @@
       sudo nano /etc/samba/smb.conf
       
       add these lines to smb.conf
-      [sharedfolder]
+      [share]
         path = /mnt/storage
         writeable = yes
         browseable = yes
         public = yes
         create mask = 0644
         directory mask = 0755
-        force user = shareuser
+        force directory mode = 2770
+        
 
        sudo systemctl restart smbd
       
