@@ -17,6 +17,7 @@
       newgrp microk8s
       sudo apt-get install samba -y
       sudo nano /etc/samba/smb.conf
+      
       add these lines to smb.conf
       [sharedfolder]
         path = /mnt/storage
@@ -27,7 +28,7 @@
         directory mask = 0755
         force user = shareuser
 
-       sudo service smbd restart
+       sudo systemctl restart smbd
       
 ----
       
