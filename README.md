@@ -12,7 +12,7 @@
       su vagrant
       ssh vagrant@ansible
       cd ansible
-      ansible-playbook -i inventory playbooks/site.yml
+      ansible-playbook -i inventory playbooks/site.yml -K
       sudo usermod -a -G microk8s dave
       newgrp microk8s
       sudo apt-get install samba -y
