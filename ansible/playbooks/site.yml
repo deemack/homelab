@@ -1,3 +1,4 @@
 ---
 - import_playbook: configure_microk8s_cluster.yml
 - import_playbook: configure_dlna_server.yml
+- import_playbook: configure_samba.yml
