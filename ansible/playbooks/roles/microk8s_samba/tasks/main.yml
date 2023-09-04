@@ -21,5 +21,5 @@
 
 - name: Restart samba service
   ansible.builtin.service:
-    name: samba
+    name: smbd
     state: restarted 
