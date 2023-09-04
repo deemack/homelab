@@ -26,19 +26,19 @@
 - name: Copy pv_dlna.yml to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/k8s/dlna/pv_dlna.yml
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_dlna/files/pv_dlna.yml
     dest: /tmp/pv_dlna.yml
 
 - name: Copy pvc_dlna.yml to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/k8s/dlna/pvc_dlna.yml
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_dlna/files/pvc_dlna.yml
     dest: /tmp/pvc_dlna.yml
 
 - name: Copy deployment_dlna.yml to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/k8s/dlna/deployment_dlna.yml
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_dlna/files/deployment_dlna.yml
     dest: /tmp/deployment_dlna.yml
 
 - name: Create Persistent Volume
