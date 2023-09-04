@@ -25,8 +25,8 @@ site.yml
 ### Accessing the Kubernetes Dashboard
 * Run the following command on the Physical Host  
 ```
-    token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
-    microk8s kubectl -n kube-system describe secret $token
+token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
+microk8s kubectl -n kube-system describe secret $token
 ```
 * Navigate to \<Physical Host IP>:32075
 * Use the token to log in
