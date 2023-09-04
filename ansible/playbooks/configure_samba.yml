@@ -1,0 +1,7 @@
+---
+- name: Configure Samba share
+  hosts: beelink
+  become: true
+  gather_facts: yes
+  roles:
+    - microk8s_samba

@@ -1,0 +1,25 @@
+---
+- name: Install samba
+  ansible.builtin.package:
+    name: samba
+    state: present
+
+- name: Append samba share config to smb.conf
+  ansible.builtin.blockinfile:
+  path: /etc/smb.conf
+  block: |
+    [share]
+      path = /mnt/storage
+      writeable = yes
+      browseable = yes
+      public = yes
+      create mask = 0644
+      directory mask = 0755
+      force directory mode = 2770
+  backup: yes
+  state: present
+
+- name: Restart samba service
+  ansible.builtin.service:
+    name: samba
+    state: restarted 
