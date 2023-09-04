@@ -11,6 +11,7 @@ printf "${GREEN}Add entry to fstab for SSD${NC}\n"
 uuid=$(lsblk -no uuid /dev/sda)
 fstab_entry="UUID=""$uuid"" /mnt/storage ntfs permissions,locale=en_US.utf8 0 2"
 echo $fstab_entry | sudo tee -a /etc/fstab
+sudo mount -a
 
 printf "${GREEN}Setting auto accept for restarting services after update${NC}\n"
 sudo sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
@@ -42,6 +43,7 @@ sudo rm ./vagrant_${VAGRANT_VER}_amd64.deb
 
 printf "${GREEN}Creating vagrant user${NC}\n"
 sudo useradd -s /bin/bash -m -p $(openssl passwd -1 vagrant) vagrant
+sudo usermod -aG sudo vagrant
 
 printf "${GREEN}Creating ssh key-pair for vagrant user on beelink${NC}\n"
 sudo mkdir /home/vagrant/.ssh
