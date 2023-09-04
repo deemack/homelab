@@ -59,7 +59,7 @@ site.yml
 
 * You can also save this **cat /var/snap/microk8s/current/credentials/client.config** to file and use it to login as a **kubeconfig**
 
-### Restarting the minidlna service into the container
+### Restarting the minidlna service in the container to update the database.
 * Run the following commands to kill the pod, and kubernetes will re-create it.
 ````
 microk8s kubectl get pods -n dlna-ns
