@@ -12,6 +12,9 @@ uuid=$(lsblk -no uuid /dev/sda)
 fstab_entry="UUID=""$uuid"" /mnt/storage ntfs permissions,locale=en_US.utf8 0 2"
 echo $fstab_entry | sudo tee -a /etc/fstab
 
+printf "${GREEN}Setting auto accept for restarting services after update${NC}\n"
+sudo sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+
 printf "${GREEN}Updating hosts file on Beelink${NC}\n"
 echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
 echo "$BEELINK beelink" | sudo tee -a /etc/hosts
