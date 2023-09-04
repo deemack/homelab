@@ -1,6 +1,8 @@
 # homelab
 * This project creates an ansible VM on your Server, so that it can be used to provision the Server.
 * ssh via public keys is configured from the Server to the VM and vice versa, for the user 'vagrant:vagrant'
+
+* Install Ubuntu server to your hardware using a USB or PXE-Boot installation https://github.com/deemack/pxe
 * Clone the repo, navigate into the homelab directory and run the setup_environment script:
 ----
       git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x setup_environment.sh && bash setup_environment.sh
