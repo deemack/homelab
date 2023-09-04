@@ -7,8 +7,6 @@
 ----
 * Once the installation has completed, run the following commands:
 ----
-      sudo apt install python3-pip -y
-      sudo usermod -aG sudo vagrant
       su vagrant
       ssh vagrant@ansible
       cd ansible
