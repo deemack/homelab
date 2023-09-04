@@ -24,6 +24,7 @@ sudo apt update && sudo apt upgrade -y
 
 printf "${GREEN}Installing python${NC}\n"
 sudo apt-get install python3 -y
+sudo apt install python3-pip -y
 
 printf "${GREEN}Installing sshpass${NC}\n"
 sudo apt-get install sshpass -y
