@@ -69,7 +69,3 @@
     name: 'dave'
     groups: microk8s
     append: yes
-
-- name: Update group membership
-  command:
-    cmd: newgrp microk8s
