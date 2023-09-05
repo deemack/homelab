@@ -7,6 +7,9 @@ spec:
   type: NodePort
   ports:
     - name: http
+      protocol: TCP
       port: 3000
+      targetPort: 3000
+      nodePort: 30330
   selector:
     app: "wikijs"
