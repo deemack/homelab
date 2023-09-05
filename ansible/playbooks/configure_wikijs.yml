@@ -1,1 +1,7 @@
-
+---
+- name: Configure Wikijs
+  hosts: beelink
+  become: true
+  gather_facts: yes
+  roles:
+    - microk8s_wikijs
