@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wikijs
+  name: wikijs-db-claim
 spec:
   storageClassName: manual
   accessModes:
