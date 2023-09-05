@@ -1,229 +1,64 @@
-##### Create your namespace file
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: wikijs
-  labels:
-    name: wikijs
-	
-##### Apply your namespace file
-microk8s kubectl apply -f wikijs.yml	
-	
-##### To create the encrypted passwords used for the wikijs-secrets.yml file, use these commands
-# MySQL root user
-$ echo -n 'root' | base64
-cm9vdA==
-
-# MySQL root user password
-$ echo -n 'StrongRootPassword' | base64
-U3Ryb25nUm9vdFBhc3N3b3Jk
-
-# Wiki.js MySQL database name
-$ echo -n 'wikijs' | base64
-d2lraWpz
-
-# Wiki.js MySQL user
-$ echo -n 'wikijs' | base64
-d2lraWpz
-
-# Wiki.js MySQL user Password
-$ echo -n 'WikijsUserPassw0rd' | base64
-V2lraWpzVXNlclBhc3N3MHJk
-
-	
-	
-##### wikijs-secrets.yml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mariadb-secret
-  namespace: wikijs
-type: Opaque
-data:
-  ROOT: cm9vdA==
-  ROOT_PASSWORD: U3Ryb25nUm9vdFBhc3N3b3Jk
-  DATABASE: d2lraWpz
-  USER: d2lraWpz
-  PASSWORD: V2lraWpzVXNlclBhc3N3MHJk
-  
-##### Apply your secrets file
-microk8skubectl apply -f wikijs-secret.yaml
-
-##### Verify changes
-microk8s kubectl get secret -n wikijs
-
-##### List available storage classes in your k8s cluster
-microk8s kubectl get storageclasses
-
-##### Create persistent volume file and appl it: kubectl apply -f https://k8s.io/examples/pods/storage/pv-volume.yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wikijs-pv
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/storage/wikijs"
-	
-##### Create Persistent Volume Claim: kubectl apply -f https://k8s.io/examples/pods/storage/pv-claim.yaml	
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wikijs-pv-claim
-  namespace: wikijs
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-	  
-##### confirm PVC is created and available
-microk8s kubectl get pvc -n wikijs
-
-##### Create wikijs-config.yml file
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: mariadb
-  namespace: wikijs
-spec:
-  selector:
-    app: mariadb
-  ports:
-  - name: mariadb
-    protocol: TCP
-    port: 3306
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mariadb
-  namespace: wikijs
-  labels:
-    app: mariadb
-spec:
-  selector:
-    matchLabels:
-      app: mariadb
-  template:
-    metadata:
-      labels:
-        app: mariadb
-    spec:
-      containers:
-      - name: mariadb
-        image: mariadb:latest
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: ROOT_PASSWORD
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: DATABASE
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: USER
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: PASSWORD
-        - name: MARIADB_ROOT_HOST
-          value: "%"
-        ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: wikijs-db
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: wikijs-db
-        persistentVolumeClaim:
-          claimName: wikijs-pv-claim
-		  
-	##### apply the configuration
-	microk8s kubectl apply -f wikijs-config.yaml -n wikij
-	
-	##### Confirm the pod is running
-	microk8s kubectl get deployment -n wikijs
-	
-##### deploy the wikijs service and application wikijs-service.yml
-apiVersion: v1
-kind: Service
-metadata:
-  name: "wikijs"
-  namespace: wikijs
-spec:
-  type: NodePort
-  ports:
-    - name: http
-      port: 3000
-  selector:
-    app: "wikijs"
-	
-##### microk8s kubectl apply -f wikijs-service.yaml
+- name: Create mount points on MicroK8s Node | wikijs
+  ansible.builtin.file:
+    path: /mnt/storage/wikijs
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
 
+- name: Create wikijs namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: wikijs-ns
+    api_version: v1
+    kind: Namespace
+    state: present
 
-##### vim wikijs-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: wikijs
-  namespace: wikijs
-  labels:
-    app: wikijs
-spec:
-  selector:
-    matchLabels:
-      app: wikijs
-  template:
-    metadata:
-      labels:
-        app: wikijs
-    spec:
-      containers:
-      - name: wikijs
-        image: requarks/wiki:latest
-        imagePullPolicy: Always
-        env:
-        - name: DB_TYPE
-          value: "mariadb"
-        - name: DB_HOST
-          value: "mariadb"
-        - name: DB_PORT
-          value: "3306"
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: DATABASE
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: USER
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: mariadb-secret
-              key: PASSWORD
-        ports:
-        - containerPort: 3000
-          name: http
-		  
-##### microk8s kubectl apply -f wikijs-deployment.yaml
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wikijs/files
+    dest: /tmp/
+
+- name: Apply Secrets
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/secrets_wikijs.yml
+
+- name: Create Persistent Volume
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/pv_wikijs.yml
+
+- name: Create Persistent Volume Claim
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/pvc_wikijs.yml
+
+- name: Create Config Map
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/config_wikijs.yml
+
+- name: Create wikijs Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/service_wikijs.yml
+
+- name: Create Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-ns
+    src: /tmp/deployment_wikijs.yml
