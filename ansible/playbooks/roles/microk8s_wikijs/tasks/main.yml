@@ -18,7 +18,7 @@
 - name: Copy k8s yaml files to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/playbooks/roles/microk8s_wikijs/files
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wikijs/files/
     dest: /tmp/
 
 - name: Apply Secrets
