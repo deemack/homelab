@@ -41,5 +41,5 @@ spec:
               name: pgsql-secret
               key: PASSWORD
         ports:
-        - containerPort: 3001
+        - containerPort: 3000
           name: http
