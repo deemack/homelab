@@ -7,6 +7,14 @@
     owner: nobody
     group: nogroup
 
+- name: Create mount points on MicroK8s Node | wikijs-pgsql-app
+  ansible.builtin.file:
+    path: /mnt/storage/wikijs-pgsql-app
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+    
 - name: Create wikijs-pgsql namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
