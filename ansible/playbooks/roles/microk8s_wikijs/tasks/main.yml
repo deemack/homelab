@@ -11,7 +11,7 @@
   ansible.builtin.file:
     path: /mnt/storage/wikijs/wikijs
     state: directory
-    mode: '0755'
+    mode: '0777'
     owner: nobody
     group: nogroup
     
