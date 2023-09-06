@@ -28,19 +28,33 @@
     namespace: wikijs-pgsql-ns
     src: /tmp/secrets_wikijs_pgsql.yml
 
-- name: Create Persistent Volume
+- name: Create Persistent Volume | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: wikijs-pgsql-ns
     src: /tmp/pv_wikijs_pgsql.yml
 
-- name: Create Persistent Volume Claim
+- name: Create Persistent Volume Claim | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: wikijs-pgsql-ns
     src: /tmp/pvc_wikijs_pgsql.yml
+    
+- name: Create Persistent Volume | wikijs_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-pgsql-ns
+    src: /tmp/pv_wikijs_db_pgsql.yml
+
+- name: Create Persistent Volume Claim | wikijs_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs-pgsql-ns
+    src: /tmp/pvc_wikijs_db_pgsql.yml
 
 - name: Create Config Map
   kubernetes.core.k8s:
