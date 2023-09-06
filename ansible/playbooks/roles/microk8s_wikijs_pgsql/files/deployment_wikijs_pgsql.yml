@@ -49,4 +49,4 @@ spec:
       volumes:
       - name: wikijs-app
         persistentVolumeClaim:
-          claimName: wikijs-pgsql-pv-claim         
+          claimName: wikijs-pgsql-pv-claim
