@@ -1,4 +1,4 @@
-# homelab
+![aaa](https://github.com/deemack/homelab/assets/72137221/d3dc9bea-c7f1-4f9d-ae20-69321e95b24d)# homelab
 This project deploys a MicroK8s cluster along with some containers to a Physical Host.
 
 ## Physical Host
@@ -42,6 +42,14 @@ Media can be copied into the **TV** and **Movies** folders for playback by the m
 The backups for **wikijs** are also available on the share.
 ### Wikijs
 The Wikijs uses a postgresql database. After a fresh installtion, you might want to restore your content from GitHub or backup on the Physical Hosts 2TB SSD.
+#### Backing up the Postgres database
+- Log into the Kubernetes Dashboard
+- Click Pods then Right-Click on the wikijs postgres pod and Click Execute
+- In the terminal run the following command
+```
+pg_dump wikijs -U wikijs -F c > /var/lib/postgresql/data/wikibackup
+```
+- This will create a backup of the database and it can be retrieved from the wikijs share on the 2TB SSD.
 #### Restoring the Database after a fresh installation
 
 
