@@ -43,7 +43,7 @@ spec:
         ports:
         - containerPort: 3000
           name: http
-         volumeMounts:
+        volumeMounts:
         - name: wikijs-app
           mountPath: /wiki
       volumes:
