@@ -1,16 +1,24 @@
 ---
-- name: Create mount points on MicroK8s Node | wikijs
+- name: Create mount points on MicroK8s Node | postgres
   ansible.builtin.file:
-    path: /mnt/storage/wikijs
+    path: /mnt/storage/wikijs/postgres
     state: directory
     mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | wikijs
+  ansible.builtin.file:
+    path: /mnt/storage/wikijs/wikijs
+    state: directory
+    mode: '0777'
     owner: nobody
     group: nogroup
 
 - name: Create wikijs namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    name: wikijs-ns
+    name: wikijs
     api_version: v1
     kind: Namespace
     state: present
@@ -25,40 +33,54 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
-    src: /tmp/secrets_wikijs.yml
+    namespace: wikijs
+    src: /tmp/secrets_postgres.yml
 
-- name: Create Persistent Volume
+- name: Create Persistent Volume | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
+    namespace: wikijs
     src: /tmp/pv_wikijs.yml
 
-- name: Create Persistent Volume Claim
+- name: Create Persistent Volume Claim | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
+    namespace: wikijs
     src: /tmp/pvc_wikijs.yml
+
+- name: Create Persistent Volume | wikijs_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs
+    src: /tmp/pv_postgres.yml
+
+- name: Create Persistent Volume Claim | wikijs_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wikijs
+    src: /tmp/pvc_postgres.yml
 
 - name: Create Config Map
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
+    namespace: wikijs
     src: /tmp/config_wikijs.yml
 
-- name: Create wikijs Service
+- name: Create wikijs-pgsql Service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
+    namespace: wikijs
     src: /tmp/service_wikijs.yml
 
 - name: Create Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-ns
+    namespace: wikijs
     src: /tmp/deployment_wikijs.yml

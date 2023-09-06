@@ -2,65 +2,65 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb
-  namespace: wikijs-ns
+  name: pgsql
+  namespace: wikijs
 spec:
   selector:
-    app: mariadb
+    app: pgsql
   ports:
-  - name: mariadb
+  - name: pgsql
     protocol: TCP
-    port: 3306
+    port: 5432
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mariadb
-  namespace: wikijs-ns
+  name: pgsql
+  namespace: wikijs
   labels:
-    app: mariadb
+    app: pgsql
 spec:
   selector:
     matchLabels:
-      app: mariadb
+      app: pgsql
   template:
     metadata:
       labels:
-        app: mariadb
+        app: pgsql
     spec:
       containers:
-      - name: mariadb
-        image: mariadb:latest
+      - name: pgsql
+        image: postgres:latest
         env:
-        - name: MYSQL_ROOT_PASSWORD
+        - name: POSTGRES_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: ROOT_PASSWORD
-        - name: MYSQL_DATABASE
+        - name: POSTGRES_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: DATABASE
-        - name: MYSQL_USER
+        - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: USER
-        - name: MYSQL_PASSWORD
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: PASSWORD
-        - name: MARIADB_ROOT_HOST
+        - name: POSTGRES_ROOT_HOST
           value: "%"
         ports:
-        - containerPort: 3306
-          name: mysql
+        - containerPort: 5432
+          name: pgsql
         volumeMounts:
         - name: wikijs-db
-          mountPath: /var/lib/mysql
+          mountPath: /var/lib/postgresql/data
       volumes:
       - name: wikijs-db
         persistentVolumeClaim:
-          claimName: wikijs-pv-claim
+          claimName: postgres-pv-claim

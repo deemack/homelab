@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wikijs
-  namespace: wikijs-ns
+  namespace: wikijs
   labels:
     app: wikijs
 spec:
@@ -20,26 +20,33 @@ spec:
         imagePullPolicy: Always
         env:
         - name: DB_TYPE
-          value: "mariadb"
+          value: "postgres"
         - name: DB_HOST
-          value: "mariadb"
+          value: "pgsql"
         - name: DB_PORT
-          value: "3306"
+          value: "5432"
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: DATABASE
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: USER
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: mariadb-secret
+              name: postgres-secret
               key: PASSWORD
         ports:
         - containerPort: 3000
           name: http
+        volumeMounts:
+        - name: wikijs-app
+          mountPath: /wiki/data/backup
+      volumes:
+      - name: wikijs-app
+        persistentVolumeClaim:
+          claimName: wikijs-pv-claim

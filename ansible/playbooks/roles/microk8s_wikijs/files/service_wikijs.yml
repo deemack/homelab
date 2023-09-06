@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "wikijs"
-  namespace: wikijs-ns
+  namespace: wikijs
 spec:
   type: NodePort
   ports:
@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       port: 3000
       targetPort: 3000
-      nodePort: 30330
+      nodePort: 30331
   selector:
     app: "wikijs"
