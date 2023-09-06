@@ -18,7 +18,7 @@
 - name: Create wikijs-pgsql namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    name: wikijs-pgsql-ns
+    name: wikijs
     api_version: v1
     kind: Namespace
     state: present
@@ -33,54 +33,54 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/secrets_postgres.yml
 
 - name: Create Persistent Volume | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/pv_wikijs.yml
 
 - name: Create Persistent Volume Claim | wikijs
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/pvc_wikijs.yml
     
 - name: Create Persistent Volume | wikijs_db
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/pv_postgres.yml
 
 - name: Create Persistent Volume Claim | wikijs_db
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/pvc_postgres.yml
 
 - name: Create Config Map
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/config_wikijs.yml
 
 - name: Create wikijs-pgsql Service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/service_wikijs.yml
 
 - name: Create Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wikijs-pgsql-ns
+    namespace: wikijs
     src: /tmp/deployment_wikijs.yml
