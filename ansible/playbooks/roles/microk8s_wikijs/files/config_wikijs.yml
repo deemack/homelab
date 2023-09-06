@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pgsql
-  namespace: wikijs-pgsql-ns
+  namespace: wikijs
 spec:
   selector:
     app: pgsql
@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pgsql
-  namespace: wikijs-pgsql-ns
+  namespace: wikijs
   labels:
     app: pgsql
 spec:
@@ -35,22 +35,22 @@ spec:
         - name: POSTGRES_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: ROOT_PASSWORD
         - name: POSTGRES_DATABASE
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: DATABASE
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: PASSWORD
         - name: POSTGRES_ROOT_HOST
           value: "%"
@@ -63,4 +63,4 @@ spec:
       volumes:
       - name: wikijs-db
         persistentVolumeClaim:
-          claimName: wikijs-db-pgsql-pv-claim
+          claimName: postgres-pv-claim

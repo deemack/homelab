@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wikijs
-  namespace: wikijs-pgsql-ns
+  namespace: wikijs
   labels:
     app: wikijs
 spec:
@@ -49,4 +49,4 @@ spec:
       volumes:
       - name: wikijs-app
         persistentVolumeClaim:
-          claimName: wikijs-pgsql-pv-claim
+          claimName: wikijs-pv-claim
