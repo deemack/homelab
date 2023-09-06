@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: pgsql
-        image: pgsql:11
+        image: postgres:latest
         env:
         - name: POSTGRES_ROOT_PASSWORD
           valueFrom:
