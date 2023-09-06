@@ -45,7 +45,7 @@ spec:
           name: http
         volumeMounts:
         - name: wikijs-app
-          mountPath: /wiki
+          mountPath: /wiki/data/backup
       volumes:
       - name: wikijs-app
         persistentVolumeClaim:
