@@ -28,17 +28,17 @@ spec:
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: DATABASE
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: USER
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
-              name: pgsql-secret
+              name: postgres-secret
               key: PASSWORD
         ports:
         - containerPort: 3000
