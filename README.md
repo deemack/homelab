@@ -54,7 +54,7 @@ The backups for **wikijs** are also available on the share.
 pg_dump wikijs -U wikijs -F c > /var/lib/postgresql/data/wikibackup.dump
 ```
 - This will create a backup of the database and it can be retrieved from the wikijs share on the 2TB SSD.
-#### Restoring the Database after a fresh installation
+#### Restoring the WikiJS Database after a fresh installation
 - Copy the wikibackup.dump file to the /mnt/storage/wikijs/postgres/ directory on the Physical Host
 - Log into the Kubernetes Dashboard
 - Click Pods then Right-Click on the wikijs postgres pod and Click Execute
