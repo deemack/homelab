@@ -15,7 +15,7 @@
     owner: nobody
     group: nogroup
     
-- name: Create wikijs-pgsql namespace
+- name: Create wikijs namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     name: wikijs
