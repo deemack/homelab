@@ -1,7 +1,0 @@
----
-- name: Configure Wikijs pgsql
-  hosts: beelink
-  become: true
-  gather_facts: yes
-  roles:
-    - microk8s_wikijs_pgsql
