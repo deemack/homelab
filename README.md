@@ -1,4 +1,4 @@
-![aaa](https://github.com/deemack/homelab/assets/72137221/d3dc9bea-c7f1-4f9d-ae20-69321e95b24d)# homelab
+# homelab
 This project deploys a MicroK8s cluster along with some containers to a Physical Host.
 
 ## Physical Host
@@ -16,7 +16,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
 git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x setup_environment.sh && bash setup_environment.sh
 ```
 * Once complete, a MicroK8s cluster will be running on the Physical Host.
-### Accessing the Kubernetes Dashboard from an external PC
+### Access the Kubernetes Dashboard from an external PC
 * Run the following command on the Physical Host  
 ```
 token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
@@ -36,12 +36,16 @@ This is useful if you have saved some new media straight onto the 2TB SSD and wa
 microk8s kubectl get pods -n dlna-ns
 microk8s kubectl exec -it -n dlna-ns dlna-b8775f74b-6lrsb -- /bin/bash -c "kill 1"
 ```
+----
 ### SAMBA file share
 The contents of **/mnt/storage** are shared over the network. The share can be accessed in File Explorer via **\\192.168.1.100\share**
 Media can be copied into the **TV** and **Movies** folders for playback by the miniDLNA container.
 The backups for **wikijs** are also available on the share.
+
+----
 ### Wikijs
-The Wikijs uses a postgresql database. After a fresh installtion, you might want to restore your content from GitHub or backup on the Physical Hosts 2TB SSD.
+- Access WikiJs via **192.168.1.100:30331**
+- The Wikijs uses a postgresql database. After a fresh installtion, you might want to restore your content from GitHub or backup on the Physical Hosts 2TB SSD.
 #### Backing up the Postgres database
 - Log into the Kubernetes Dashboard
 - Click Pods then Right-Click on the wikijs postgres pod and Click Execute
@@ -60,6 +64,7 @@ dropdb -U wikijs wikijs -f
 createdb -U wikijs wikijs
 cat /var/lib/postgresql/data/wikibackup.dump | pg_restore -U wikijs -d wikijs
 ```
+----
 
 
 
