@@ -59,8 +59,8 @@ spec:
           name: pgsql
         volumeMounts:
         - name: wikijs-db
-          mountPath: /var/lib/postgresql
+          mountPath: /var/lib/postgresql/data
       volumes:
       - name: wikijs-db
         persistentVolumeClaim:
-          claimName: wikijs-pgsql-pv-claim
+          claimName: wikijs-db-pgsql-pv-claim

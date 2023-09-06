@@ -43,3 +43,10 @@ spec:
         ports:
         - containerPort: 3000
           name: http
+         volumeMounts:
+        - name: wikijs-app
+          mountPath: /wiki
+      volumes:
+      - name: wikijs-app
+        persistentVolumeClaim:
+          claimName: wikijs-pgsql-pv-claim         
