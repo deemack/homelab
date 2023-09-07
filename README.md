@@ -3,7 +3,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
 
 ## Physical Host
 * Beelink SEi12 Mini PC
-  * Intel i5-1235U
+  * Intel i5-1235U (10 Cores 12 Threads)
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD
