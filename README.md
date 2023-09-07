@@ -77,3 +77,102 @@ playbooks/
         main.yml
 site.yml
 ```
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-deployment-one
+data:
+  index.html: |
+    <html>
+      <head>
+        <title>Brians Week 18 Project</title>
+      </head>
+      <body>
+        <h1>This is Deployment One</h1>
+      </body>
+    </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-deployment-two
+data:
+  index.html: |
+    <html>
+      <head>
+        <title>Brians Week 18 Project</title>
+      </head>
+      <body>
+        <h1>This is Deployment Two</h1>
+      </body>
+    </html>
+	
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brians-deployment1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: brians-config-volume-1
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: brians-config-volume-1
+        configMap:
+          name: configmap-deployment-one
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brians-deployment2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: brians-config-volume-2
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: brians-config-volume-2
+        configMap:
+          name: configmap-deployment-two
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: brians-service
+spec:
+  selector:
+    app: nginx
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    nodePort: 30001		  
