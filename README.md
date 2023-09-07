@@ -15,7 +15,12 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
 ```
 git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x setup_environment.sh && bash setup_environment.sh
 ```
-* Once complete, a MicroK8s cluster will be running on the Physical Host.
+* Once complete, a MicroK8s cluster will be running on the Physical Host with the following container/services
+  * miniDLNA
+  * Samba Share
+  * wikijs
+  * Kubernetes Dashboard
+    
 ### Access the Kubernetes Dashboard from an external PC
 * Run the following command on the Physical Host  
 ```
