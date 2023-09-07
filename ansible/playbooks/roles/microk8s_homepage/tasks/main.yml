@@ -10,7 +10,7 @@
 - name: Copy k8s yaml files to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/playbooks/roles/microk8s_hompage/files/
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_homepage/files/
     dest: /tmp/
 
 - name: Create Config Map
