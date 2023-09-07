@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-deployment
+data:
+  index.html: |
+    <html>
+      <head>
+        <title>Home</title>
+      </head>
+      <body>
+        <h1>Where do you want to go?</h1>
+      </body>
+    </html>
