@@ -69,6 +69,8 @@ dropdb -U wikijs wikijs -f
 createdb -U wikijs wikijs
 cat /var/lib/postgresql/data/wikibackup.dump | pg_restore -U wikijs -d wikijs
 ```
+Next goto Deployments, and restart the **wikijs** deployment
+
 ----
 
 
