@@ -84,6 +84,10 @@
         state: present
         src: /tmp/manifest_metallb.yml
 
+    - name: Sleep for 60 seconds and continue with play
+      ansible.builtin.wait_for:
+      timeout: 60
+
     - name: Apply MetalLB IPAddressPool
       kubernetes.core.k8s:
         kubeconfig: /var/snap/microk8s/current/credentials/client.config
