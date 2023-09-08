@@ -3,32 +3,32 @@
   pip:
     name:
       - kubernetes
-      
+
 - name: Ubuntu | Install MicroK8s using snap
   community.general.snap:
     name: microk8s
     classic: true
     channel: '1.27'
-    
+
 - name: Ubuntu | Join vagrant user to microk8s group
   user:
      name: vagrant
      groups: microk8s
      append: yes
-     
+
 - name: Create kubectl alias for microk8s
   community.general.snap_alias:
     name: microk8s
     alias: kubectl
-    
+
 - name: enable dns addon
   command:
     cmd: kubectl enable dns
-    
+
 - name: enable hostpath-storage addon
   command:
     cmd: kubectl enable hostpath-storage
-    
+
 - name: enable dashboard addon
   command:
     cmd: kubectl enable dashboard
@@ -36,11 +36,11 @@
 - name: enable ingress addon
   command:
     cmd: kubectl enable ingress
-    
+
 - name: enable host-access addon
   command:
     cmd: kubectl enable host-access
-    
+
 - name: Change kubernetes-dashboard service to NodePort
   kubernetes.core.k8s_service:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
@@ -71,27 +71,27 @@
     append: yes
 
 - name: Configure MetalLB
+  become: yes
   block:
     - name: Copy MetalLB manifest
-    become: true
-    copy:
-      src: /home/vagrant/ansible/playbooks/roles/microk8s_cluster/files/
-      dest: /tmp
+      copy:
+        src: /home/vagrant/ansible/playbooks/roles/microk8s_cluster/files/
+        dest: /tmp
 
     - name: Apply MetalLB manifest
-    kubernetes.core.k8s:
-      kubeconfig: /var/snap/microk8s/current/credentials/client.config
-      state: present      
-      src: /tmp/manifest_metallb.yml
+      kubernetes.core.k8s:
+        kubeconfig: /var/snap/microk8s/current/credentials/client.config
+        state: present
+        src: /tmp/manifest_metallb.yml
 
     - name: Apply MetalLB IPAddressPool
-    kubernetes.core.k8s:
-      kubeconfig: /var/snap/microk8s/current/credentials/client.config
-      state: present      
-      src: /tmp/ipaddresspool_metallb.yml
+      kubernetes.core.k8s:
+        kubeconfig: /var/snap/microk8s/current/credentials/client.config
+        state: present
+        src: /tmp/ipaddresspool_metallb.yml
 
     - name: Apply MetalLB L2Advertisement
-    kubernetes.core.k8s:
-      kubeconfig: /var/snap/microk8s/current/credentials/client.config
-      state: present      
-      src: /tmp/l2advertisement_metallb.yml
+      kubernetes.core.k8s:
+        kubeconfig: /var/snap/microk8s/current/credentials/client.config
+        state: present
+        src: /tmp/l2advertisement_metallb.yml
