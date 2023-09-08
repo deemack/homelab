@@ -69,3 +69,29 @@
     name: 'dave'
     groups: microk8s
     append: yes
+
+- name: Configure MetalLB
+  block:
+    - name: Copy MetalLB manifest
+    become: true
+    copy:
+      src: /home/vagrant/ansible/playbooks/roles/microk8s_cluster/files/
+      dest: /tmp
+
+    - name: Apply MetalLB manifest
+    kubernetes.core.k8s:
+      kubeconfig: /var/snap/microk8s/current/credentials/client.config
+      state: present      
+      src: /tmp/manifest_metallb.yml
+
+    - name: Apply MetalLB IPAddressPool
+    kubernetes.core.k8s:
+      kubeconfig: /var/snap/microk8s/current/credentials/client.config
+      state: present      
+      src: /tmp/ipaddresspool_metallb.yml
+
+    - name: Apply MetalLB L2Advertisement
+    kubernetes.core.k8s:
+      kubeconfig: /var/snap/microk8s/current/credentials/client.config
+      state: present      
+      src: /tmp/l2advertisement_metallb.yml
