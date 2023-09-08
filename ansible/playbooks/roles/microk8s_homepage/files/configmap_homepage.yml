@@ -9,6 +9,8 @@ data:
         <title>Home</title>
       </head>
       <body>
-        <h1>Where do you want to go?</h1>
+        <a href="http://192.168.1.100:30331">Wiki</a>
+        <a href="http://192.168.1.71/admin">Pi-hole</a>
+        <a href="http://192.168.1.100:32075">Dashboard</a>
       </body>
     </html>
