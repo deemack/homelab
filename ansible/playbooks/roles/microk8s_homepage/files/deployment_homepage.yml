@@ -23,4 +23,4 @@ spec:
       volumes:
       - name: homepage-config-volume
         configMap:
-          name: configmap-homepage
+          name: configmap-deployment
