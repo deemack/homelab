@@ -87,7 +87,7 @@
     
 - name: Wait for wikijs database to come online
   ansible.builtin.wait_for:
-    timeout: 45
+    timeout: 60
 
 - name: Get wikijs database pod name
   command:
