@@ -85,7 +85,7 @@ data:
     <section>
       <nav>
         <ul>
-          <li><a href="http://192.168.1.240" target="_blank">Wiki</a></li>
+          <li><a href="http://192.168.1.100:30331" target="_blank">Wiki</a></li>
           <li><a href="http://192.168.1.71/admin" target="_blank">Pi-hole</a></li>
           <li><a href="https://192.168.1.100:32075" target="_blank">Dashboard</a></li>
         </ul>
