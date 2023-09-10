@@ -78,9 +78,51 @@
     namespace: wikijs
     src: /tmp/service_wikijs.yml
 
-- name: Create Deployment
+- name: Create wikijs Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: wikijs
     src: /tmp/deployment_wikijs.yml
+    
+- name: Wait for wikijs database to come online
+  ansible.builtin.wait_for:
+    timeout: 45
+
+- name: Get wikijs database pod name
+  command:
+    cmd: microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers>  register: pod_pgsql
+
+- name: Copy wikijs database backup file to postgres pod
+  copy:
+    src: /mnt/storage/backup/wikijs/wikibackup.tar
+    dest: /mnt/storage/wikijs/postgres/
+    remote_src: true
+
+- name: Drop wikijs database
+  kubernetes.core.k8s_exec:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    namespace: wikijs
+    pod: "{{ pod_pgsql.stdout }}"
+    container: pgsql
+    command: dropdb -U wikijs wikijs -f
+
+- name: Create wikijs database
+  kubernetes.core.k8s_exec:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    namespace: wikijs
+    pod: "{{ pod_pgsql.stdout }}"
+    container: pgsql
+    command: createdb -U wikijs wikijs
+
+- name: Restore wikijs database
+  kubernetes.core.k8s_exec:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    namespace: wikijs
+    pod: "{{ pod_pgsql.stdout }}"
+    container: pgsql
+    command: pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/w>  tags: test
+
+- name: Restart wikijs deployment
+  command:
+    cmd: microk8s kubectl rollout restart -n wikijs deployment/wikijs
