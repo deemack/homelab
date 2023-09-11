@@ -84,10 +84,13 @@
     state: present
     namespace: wikijs
     src: /tmp/deployment_wikijs.yml
-    
-- name: Wait for wikijs database to come online
-  ansible.builtin.wait_for:
-    timeout: 60
+
+- name: Wait for MetalLB to come online
+  shell: microk8s kubectl get pods -n wikijs -o json
+  register: kubectl_get_pod
+  until: kubectl_get_pod.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+  retries: 20
+  delay: 15
 
 - name: Get wikijs database pod name
   command:

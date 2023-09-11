@@ -85,8 +85,11 @@
         src: /tmp/manifest_metallb.yml
 
     - name: Wait for MetalLB to come online
-      ansible.builtin.wait_for:
-        timeout: 80
+      shell: microk8s kubectl get pods -n metallb-system -o json
+      register: kubectl_get_pod
+      until: kubectl_get_pod.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+      retries: 20
+      delay: 15
 
     - name: Apply MetalLB IPAddressPool
       kubernetes.core.k8s:
