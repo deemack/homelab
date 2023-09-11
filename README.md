@@ -6,7 +6,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * Intel i5-1235U (10 Cores 12 Threads)
   * 16GB Ram
   * 500GB NVMe SSD
-  * 2TB SATA SSD
+  * 2TB SATA SSD (formatted as NTFS)
 ## Installation Steps
 ### Provision the Physical Host
 * Install Ubuntu server to your Physical Host using a USB or PXE-Boot installation https://github.com/deemack/pxe
