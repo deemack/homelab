@@ -6,7 +6,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * Intel i5-1235U (10 Cores 12 Threads)
   * 16GB Ram
   * 500GB NVMe SSD
-  * 2TB SATA SSD (formatted as NTFS and will be mounted to the host at /mnt/storage)
+  * 2TB SATA SSD
 
 > __Note__: The 2TB SATA SSD should be formatted as NTFS and contain the following folder structure:
 > 
