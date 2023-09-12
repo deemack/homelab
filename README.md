@@ -7,6 +7,12 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD
+ 
+> __Note__: The Physical Host has the following partition scheme:
+>     SWAP   16G
+>     EXT4   50G   /
+>     EXT4   398G  /var
+>     FAT32  1G    /boot/efi           
 
 > __Note__: The 2TB SATA SSD should be formatted as NTFS and contain the following folder structure:
 > 
