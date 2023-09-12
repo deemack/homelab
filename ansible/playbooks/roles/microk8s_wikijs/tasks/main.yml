@@ -130,3 +130,19 @@
 - name: Restart wikijs deployment
   command:
     cmd: microk8s kubectl rollout restart -n wikijs deployment/wikijs
+
+- name: Copy wikijs backup script to Host
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wikijs/files/wikijs_backup.sh
+    dest: /usr/sbin/
+    owner: root
+    group: root
+    mode: 0755
+    
+- name: Create cronjob to backup the wikijs database each night
+  ansible.builtin.cron:
+    name: "wikijs database backup"
+    minute: "1"
+    hour: "0"
+    job: "/usr/sbin/wikijs_backup"
