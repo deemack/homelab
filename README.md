@@ -59,24 +59,25 @@ The backups for **wikijs** are also available on the share.
 ----
 ### Wikijs
 - Access WikiJs via **192.168.1.100:30331**
-- The Wikijs uses a postgresql database. After a fresh installtion, you might want to restore your content from GitHub or backup on the Physical Hosts 2TB SSD.
-#### Backing up the Postgres database
+- Upon installation, the wikijs databse will be restored provided a backup exists in 2TB SSD at /mnt/storage/backup/wikijs/
+- A cronjob runs each night to backup the database and copies the backup to /mnt/storage/backup/wikijs/
+#### Manually Backing up the Postgres database
 - Log into the Kubernetes Dashboard
-- Click Pods then Right-Click on the wikijs postgres pod and Click Execute
+- Click Pods then click the 3 dots on the wikijs postgres pod and click Execute
 - In the terminal run the following command
 ```
 pg_dump wikijs -U wikijs -F t > /var/lib/postgresql/data/wikibackup.tar
 ```
 - This will create a backup of the database and it can be retrieved from the wikijs share on the 2TB SSD.
-#### Restoring the WikiJS Database after a fresh installation
+#### Manually Restoring the WikiJS Database after a fresh installation
 - Copy the wikibackup.dump file to the /mnt/storage/wikijs/postgres/ directory on the Physical Host
 - Log into the Kubernetes Dashboard
-- Click Pods then Right-Click on the wikijs postgres pod and Click Execute
+- Click Pods then click the 3 dots on the wikijs postgres pod and click Execute
 - In the terminal run the following command
 ```
 dropdb -U wikijs wikijs -f
 createdb -U wikijs wikijs
-pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/wikibackup.tar
+pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file.tar>
 ```
 - Next goto Deployments, and restart the **wikijs** deployment
 
