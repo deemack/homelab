@@ -94,3 +94,7 @@ playbooks/
         main.yml
 site.yml
 ```
+
+Start VMs commandline virtualbox
+VBoxManage list vms 
+VBoxManage startvm "GUID" --type headless
