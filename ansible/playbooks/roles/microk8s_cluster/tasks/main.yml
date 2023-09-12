@@ -1,4 +1,9 @@
 ---
+- name:  Mount all volumes
+  command:
+    cmd: mount -a
+  become: true
+  
 - name: install pre-requisites
   pip:
     name:
