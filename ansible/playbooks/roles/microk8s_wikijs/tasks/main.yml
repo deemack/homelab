@@ -125,7 +125,7 @@
     namespace: wikijs
     pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
-    command: latest=$(ls -u *wikibackup* | head -1) && pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/$latest
+    command: latest=$(ls -u /var/lib/postgresql/data/*wikibackup* | head -1) && pg_restore -U wikijs -d wikijs $latest
 
 - name: Restart wikijs deployment
   command:
