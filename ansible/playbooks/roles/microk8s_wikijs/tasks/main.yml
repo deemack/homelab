@@ -77,6 +77,12 @@
     state: present
     namespace: wikijs
     src: /tmp/service_wikijs.yml
+    
+- name: Copy wikijs database backup files to postgres pod
+  copy:
+    src: /mnt/storage/backup/wikijs/
+    dest: /mnt/storage/wikijs/postgres/
+    remote_src: true
 
 - name: Create wikijs Deployment
   kubernetes.core.k8s:
@@ -99,25 +105,12 @@
 
 - debug:
     msg: Wikijs db pod is "{{ pod_pgsql.stdout }}"
-
-- name: Copy wikijs database backup files to postgres pod
-  copy:
-    src: /mnt/storage/backup/wikijs/
-    dest: /mnt/storage/wikijs/postgres/
-    remote_src: true
-
-- name: Restart wikijs  pgsql deployment
-  command:
-    cmd: microk8s kubectl rollout restart -n wikijs deployment/pgsql
-
-- debug:
-    msg: Wikijs db pod is now "{{ pod_pgsql2.stdout }}"
     
 - name: Drop wikijs database
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql2.stdout }}"
+    pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
     command: dropdb -U wikijs wikijs -f
 
@@ -125,13 +118,13 @@
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql2.stdout }}"
+    pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
     command: createdb -U wikijs wikijs
 
 - name: Get wikijs database latest backup
   command:
-    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql2.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
+    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
   register: backup_postgres
 
 - debug:
@@ -141,7 +134,7 @@
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql2.stdout }}"
+    pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
     command: pg_restore -U wikijs -d wikijs "{{ backup_postgres.stdout }}"
 
