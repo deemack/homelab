@@ -11,6 +11,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
       * Movies
       * TV
       * backup
+        * wikijs
 ## Installation Steps
 ### Provision the Physical Host
 * Install Ubuntu server to your Physical Host using a USB or PXE-Boot installation https://github.com/deemack/pxe
