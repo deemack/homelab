@@ -97,17 +97,27 @@
     cmd: microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers -o custom-columns=":metadata.name"
   register: pod_pgsql
 
+- debug:
+    msg: Wikijs db pod is "{{ pod_pgsql.stdout }}"
+
 - name: Copy wikijs database backup files to postgres pod
   copy:
     src: /mnt/storage/backup/wikijs/
     dest: /mnt/storage/wikijs/postgres/
     remote_src: true
 
+- name: Restart wikijs  pgsql deployment
+  command:
+    cmd: microk8s kubectl rollout restart -n wikijs deployment/pgsql
+
+- debug:
+    msg: Wikijs db pod is now "{{ pod_pgsql2.stdout }}"
+    
 - name: Drop wikijs database
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql.stdout }}"
+    pod: "{{ pod_pgsql2.stdout }}"
     container: pgsql
     command: dropdb -U wikijs wikijs -f
 
@@ -115,15 +125,15 @@
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql.stdout }}"
+    pod: "{{ pod_pgsql2.stdout }}"
     container: pgsql
     command: createdb -U wikijs wikijs
 
 - name: Get wikijs database latest backup
   command:
-    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
+    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql2.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
   register: backup_postgres
-  
+
 - debug:
     msg: Restoring wikijs from backup "{{ backup_postgres.stdout }}"
 
@@ -131,10 +141,14 @@
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
-    pod: "{{ pod_pgsql.stdout }}"
+    pod: "{{ pod_pgsql2.stdout }}"
     container: pgsql
     command: pg_restore -U wikijs -d wikijs "{{ backup_postgres.stdout }}"
 
+- name: Restart wikijs pgsql deployment
+  command:
+    cmd: microk8s kubectl rollout restart -n wikijs deployment/pgsql
+    
 - name: Restart wikijs deployment
   command:
     cmd: microk8s kubectl rollout restart -n wikijs deployment/wikijs
@@ -147,7 +161,7 @@
     owner: root
     group: root
     mode: 0755
-    
+
 - name: Create cronjob to backup the wikijs database each night
   ansible.builtin.cron:
     name: "wikijs database backup"
