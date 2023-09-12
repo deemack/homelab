@@ -11,3 +11,6 @@ pod_str=$(microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers -o custo
 # Create backup and append date stamp
 d=$(date +%Y-%m-%d-%H.%M.%S)
 microk8s kubectl exec -it -n wikijs $pod_str -- /bin/bash -c "pg_dump wikijs -U wikijs -F t > /var/lib/postgresql/data/$d-wikibackup.tar"
+
+# Copy the backup to the /mnt/storage/backup/wikijs location on the 2TB SSD.
+cp -n /mnt/storage/wikijs/postgres/*wikibackup* /mnt/storage/backup/wikijs/
