@@ -119,13 +119,18 @@
     container: pgsql
     command: createdb -U wikijs wikijs
 
+- name: Get wikijs database latest backup
+  command:
+    cmd: microk8s kubectl exec -it -n wikijs $pod_str -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
+  register: backup_postgres
+  
 - name: Restore wikijs database
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
     pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
-    command: latest=$(ls -u /var/lib/postgresql/data/*wikibackup* | head -1) && pg_restore -U wikijs -d wikijs $latest
+    command: pg_restore -U wikijs -d wikijs "{{ backup_postgres }}"
 
 - name: Restart wikijs deployment
   command:
