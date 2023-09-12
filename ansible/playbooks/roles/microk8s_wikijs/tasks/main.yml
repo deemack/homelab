@@ -78,12 +78,6 @@
     namespace: wikijs
     src: /tmp/service_wikijs.yml
     
-- name: Copy wikijs database backup files to postgres pod
-  copy:
-    src: /mnt/storage/backup/wikijs/
-    dest: /mnt/storage/wikijs/postgres/
-    remote_src: true
-
 - name: Create wikijs Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
@@ -98,6 +92,23 @@
   retries: 10
   delay: 15
 
+- name: Copy wikijs database backup files to postgres pod
+  copy:
+    src: /mnt/storage/backup/wikijs/
+    dest: /mnt/storage/wikijs/postgres/
+    remote_src: true
+
+- name: Restart wikijs pgsql deployment
+  command:
+    cmd: microk8s kubectl rollout restart -n wikijs deployment/pgsql
+
+- name: Wait for wikijs pods to come online
+  shell: microk8s kubectl get pods -n wikijs -o json
+  register: kubectl_get_pod
+  until: kubectl_get_pod.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
+  retries: 10
+  delay: 15
+    
 - name: Get wikijs database pod name
   command:
     cmd: microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers -o custom-columns=":metadata.name"
