@@ -6,7 +6,7 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * Intel i5-1235U (10 Cores 12 Threads)
   * 16GB Ram
   * 500GB NVMe SSD
-  * 2TB SATA SSD (formatted as NTFS)
+  * 2TB SATA SSD (formatted as NTFS with the /mnt/storage folder structure created)
 ## Installation Steps
 ### Provision the Physical Host
 * Install Ubuntu server to your Physical Host using a USB or PXE-Boot installation https://github.com/deemack/pxe
@@ -56,7 +56,7 @@ The backups for **wikijs** are also available on the share.
 - Click Pods then Right-Click on the wikijs postgres pod and Click Execute
 - In the terminal run the following command
 ```
-pg_dump wikijs -U wikijs -F c > /var/lib/postgresql/data/wikibackup.dump
+pg_dump wikijs -U wikijs -F t > /var/lib/postgresql/data/wikibackup.tar
 ```
 - This will create a backup of the database and it can be retrieved from the wikijs share on the 2TB SSD.
 #### Restoring the WikiJS Database after a fresh installation
@@ -67,7 +67,7 @@ pg_dump wikijs -U wikijs -F c > /var/lib/postgresql/data/wikibackup.dump
 ```
 dropdb -U wikijs wikijs -f
 createdb -U wikijs wikijs
-cat /var/lib/postgresql/data/wikibackup.dump | pg_restore -U wikijs -d wikijs
+pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/wikibackup.tar
 ```
 - Next goto Deployments, and restart the **wikijs** deployment
 
