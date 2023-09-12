@@ -121,7 +121,7 @@
 
 - name: Get wikijs database latest backup
   command:
-    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
+    cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
   register: backup_postgres
   
 - name: Restore wikijs database
