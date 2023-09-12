@@ -97,9 +97,9 @@
     cmd: microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers -o custom-columns=":metadata.name"
   register: pod_pgsql
 
-- name: Copy wikijs database backup file to postgres pod
+- name: Copy wikijs database backup files to postgres pod
   copy:
-    src: /mnt/storage/backup/wikijs/wikibackup.tar
+    src: /mnt/storage/backup/wikijs/
     dest: /mnt/storage/wikijs/postgres/
     remote_src: true
 
