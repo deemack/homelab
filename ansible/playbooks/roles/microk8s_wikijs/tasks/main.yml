@@ -143,6 +143,6 @@
 - name: Create cronjob to backup the wikijs database each night
   ansible.builtin.cron:
     name: "wikijs database backup"
-    minute: "1"
+    minute: "0"
     hour: "0"
-    job: "/usr/sbin/wikijs_backup"
+    job: "/usr/sbin/wikijs_backup.sh"
