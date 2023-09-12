@@ -124,13 +124,16 @@
     cmd: microk8s kubectl exec -it -n wikijs "{{ pod_pgsql.stdout }}" -- /bin/bash -c "ls -u /var/lib/postgresql/data/*wikibackup* | head -1"
   register: backup_postgres
   
+- debug:
+    msg: Restoring wikijs from backup "{{ backup_postgres.stdout }}"
+
 - name: Restore wikijs database
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     namespace: wikijs
     pod: "{{ pod_pgsql.stdout }}"
     container: pgsql
-    command: pg_restore -U wikijs -d wikijs "{{ backup_postgres }}"
+    command: pg_restore -U wikijs -d wikijs "{{ backup_postgres.stdout }}"
 
 - name: Restart wikijs deployment
   command:
