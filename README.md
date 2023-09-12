@@ -31,6 +31,13 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
 ```
 git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x setup_environment.sh && bash setup_environment.sh
 ```
+* Once complete, run the following:
+```
+su vagrant
+cd ansible
+ansible-playbook -i inventory playbooks/site.yml -K
+```
+
 * Once complete, a MicroK8s cluster will be running on the Physical Host with the following container/services
   * miniDLNA
   * Samba Share
