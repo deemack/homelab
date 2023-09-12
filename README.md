@@ -7,6 +7,10 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD (formatted as NTFS and will be mounted to the host at /mnt/storage)
+    * The 2TB SATA SSD should be formatted as NTFS and contain the following folders:
+      * Movies
+      * TV
+      * backup
 ## Installation Steps
 ### Provision the Physical Host
 * Install Ubuntu server to your Physical Host using a USB or PXE-Boot installation https://github.com/deemack/pxe
