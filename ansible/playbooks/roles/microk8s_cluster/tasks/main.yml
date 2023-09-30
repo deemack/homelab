@@ -1,4 +1,9 @@
 ---
+- name: Create directory for SSD mount
+  ansible.builtin.file:
+    path: /mnt/storage
+    state: directory
+
 - name:  Mount all volumes
   command:
     cmd: mount -a
