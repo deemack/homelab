@@ -34,6 +34,7 @@ git clone https://github.com/deemack/homelab.git && cd homelab && sudo chmod +x 
 * Once complete, run the following:
 ```
 su vagrant
+ssh anisble
 cd ansible
 ansible-playbook -i inventory playbooks/site.yml -K
 ```
