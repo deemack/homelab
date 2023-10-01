@@ -77,7 +77,7 @@
     state: present
     namespace: wikijs
     src: /tmp/service_wikijs.yml
-    
+
 - name: Create wikijs Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
@@ -92,9 +92,21 @@
   retries: 10
   delay: 15
 
-- name: Copy wikijs database backup files to postgres pod
+- name: Get wiki backups
+  find:
+    paths: "/mnt/storage/backup/wikijs/"
+  register: found_files
+
+- name: Get latest backup file
+  set_fact:
+    latest_file: "{{ found_files.files | sort(attribute='mtime',reverse=true) | first }}"
+
+- debug:
+    msg: latest backup file is "{{ latest_file.path }}"
+
+- name: Copy latest wikijs database backup file to postgres pod
   copy:
-    src: /mnt/storage/backup/wikijs/
+    src: "{{ latest_file.path }}"
     dest: /mnt/storage/wikijs/postgres/
     remote_src: true
 
@@ -108,7 +120,7 @@
   until: kubectl_get_pod.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
   retries: 10
   delay: 15
-    
+
 - name: Get wikijs database pod name
   command:
     cmd: microk8s kubectl get pods -n wikijs -l=app=pgsql --no-headers -o custom-columns=":metadata.name"
@@ -116,7 +128,7 @@
 
 - debug:
     msg: Wikijs db pod is "{{ pod_pgsql.stdout }}"
-    
+
 - name: Drop wikijs database
   kubernetes.core.k8s_exec:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
@@ -152,7 +164,7 @@
 - name: Restart wikijs pgsql deployment
   command:
     cmd: microk8s kubectl rollout restart -n wikijs deployment/pgsql
-    
+
 - name: Restart wikijs deployment
   command:
     cmd: microk8s kubectl rollout restart -n wikijs deployment/wikijs
