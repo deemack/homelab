@@ -18,7 +18,7 @@ spec:
       containers:
         - name: dlna
           # C
-          image: vladgh/minidlna@sha256:2db31fc03986a82bf097b900ebd8f2f801f4dcd2727979a91dbcba3a5a3c6f7e
+          image: deemack/minidlna:latest
           ports:
             - containerPort: 8200
           env:
