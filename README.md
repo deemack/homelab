@@ -63,6 +63,7 @@ A static homepage that has links to some of the container webpages.
 * The html code for the webpage is in a configmap homelab/ansible/playbooks/roles/microk8s_homepage/files/configmap_homepage.yml
 * Alternatively we could create our own image from a Dockerfile that injects the html file into the image upon creation.
 
+----
 ### Minidlna
 A Mini dlna server will be installed as a container in the MicroK8s cluster. It can be used to store TV Shows and Movies that are stored on the 2TB SSD mounted at **/mnt/storage/Movies** and **/mnt/storage/TV**
 #### Restarting the minidlna service in the container to update the database.
