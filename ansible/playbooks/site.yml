@@ -5,3 +5,4 @@
 - import_playbook: configure_wikijs.yml
 - import_playbook: configure_homepage.yml
 - import_playbook: configure_wordpress.yml
+- import_playbook: configure_wordpress_restore.yml

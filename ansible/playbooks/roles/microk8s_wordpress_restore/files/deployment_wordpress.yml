@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress_restore
+  namespace: wordpress_restore
+  labels:
+    app: wordpress_restore
+spec:
+  selector:
+    matchLabels:
+      app: wordpress_restore
+  template:
+    metadata:
+      labels:
+        app: wordpress_restore
+    spec:
+      containers:
+      - image: wordpress:6.3.2-apache
+        imagePullPolicy: Always
+        name: wordpress_restore
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mysql_restore
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret_restore
+              key: PASSWORD
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret_restore
+              key: USER
+        ports:
+        - containerPort: 80
+          name: wordpress_restore
+        volumeMounts:
+        - name: wordpress-persistent-storage_restore
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage_restore
+        persistentVolumeClaim:
+          claimName: wordpress-pv-claim_restore

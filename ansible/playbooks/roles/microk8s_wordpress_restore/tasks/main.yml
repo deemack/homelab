@@ -1,0 +1,86 @@
+---
+- name: Create mount points on MicroK8s Node | mysql_restore
+  ansible.builtin.file:
+    path: /mnt/storage/wordpress_restore/mysql_restore
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | wordpress_restore
+  ansible.builtin.file:
+    path: /mnt/storage/wordpress_restore/wordpress_restore
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Create wordpress_restore namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: wordpress_restore
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wordpress_restore/files/
+    dest: /tmp/
+
+- name: Apply Secrets
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/secrets_mysql_restore.yml
+
+- name: Create Persistent Volume | wordpress_restore
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/pv_wordpress_restore.yml
+
+- name: Create Persistent Volume Claim | wordpress_restore
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/pvc_wordpress_restore.yml
+
+- name: Create Persistent Volume | wordpress_db_restore
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/pv_mysql_restore.yml
+
+- name: Create Persistent Volume Claim | wordpress_db_restore
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/pvc_mysql_restore.yml
+
+- name: Create mysql_restore Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/deployment_mysql_restore.yml
+
+- name: Create wordpress-mysql_restore Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/service_wordpress_restore.yml
+
+- name: Create wordpress_restore Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress_restore
+    src: /tmp/deployment_wordpress_restore.yml
