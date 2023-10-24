@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wordpress-pv-claim-restore
+  name: mysql-pv-claim-r
 spec:
   storageClassName: manual
   accessModes:

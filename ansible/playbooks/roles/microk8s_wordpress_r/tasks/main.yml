@@ -1,26 +1,26 @@
 ---
-- name: Create mount points on MicroK8s Node | mysql_restore
+- name: Create mount points on MicroK8s Node | mysql_r
   ansible.builtin.file:
-    path: /mnt/storage/wordpress_restore/mysql_restore
+    path: /mnt/storage/wordpress_r/mysql_r
     state: directory
     mode: '0755'
     owner: nobody
     group: nogroup
   tags: restore
 
-- name: Create mount points on MicroK8s Node | wordpress_restore
+- name: Create mount points on MicroK8s Node | wordpress_r
   ansible.builtin.file:
-    path: /mnt/storage/wordpress_restore/wordpress_restore
+    path: /mnt/storage/wordpress_r/wordpress_r
     state: directory
     mode: '0777'
     owner: nobody
     group: nogroup
   tags: restore
 
-- name: Create wordpress_restore namespace
+- name: Create wordpress_r namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    name: wordpress-restore
+    name: wordpress-r
     api_version: v1
     kind: Namespace
     state: present
@@ -29,7 +29,7 @@
 - name: Copy k8s yaml files to Node
   become: true
   copy:
-    src: /home/vagrant/ansible/playbooks/roles/microk8s_wordpress_restore/files/
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wordpress_r/files/
     dest: /tmp/
   tags: restore
 
@@ -37,62 +37,62 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/secrets_mysql_restore.yml
+    namespace: wordpress-r
+    src: /tmp/secrets_mysql_r.yml
   tags: restore
 
-- name: Create Persistent Volume | wordpress_restore
+- name: Create Persistent Volume | wordpress_r
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/pv_wordpress_restore.yml
+    namespace: wordpress-r
+    src: /tmp/pv_wordpress_r.yml
   tags: restore
 
-- name: Create Persistent Volume Claim | wordpress_restore
+- name: Create Persistent Volume Claim | wordpress_r
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/pvc_wordpress_restore.yml
+    namespace: wordpress-r
+    src: /tmp/pvc_wordpress_r.yml
   tags: restore
 
-- name: Create Persistent Volume | wordpress_db_restore
+- name: Create Persistent Volume | wordpress_db_r
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/pv_mysql_restore.yml
+    namespace: wordpress-r
+    src: /tmp/pv_mysql_r.yml
   tags: restore
 
-- name: Create Persistent Volume Claim | wordpress_db_restore
+- name: Create Persistent Volume Claim | wordpress_db_r
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/pvc_mysql_restore.yml
+    namespace: wordpress-r
+    src: /tmp/pvc_mysql_r.yml
   tags: restore
 
-- name: Create mysql_restore Deployment
+- name: Create mysql_r Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/deployment_mysql_restore.yml
+    namespace: wordpress-r
+    src: /tmp/deployment_mysql_r.yml
   tags: restore
 
-- name: Create wordpress-mysql_restore Service
+- name: Create wordpress-mysql_r Service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/service_wordpress_restore.yml
+    namespace: wordpress-r
+    src: /tmp/service_wordpress_r.yml
   tags: restore
 
-- name: Create wordpress_restore Deployment
+- name: Create wordpress_r Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress-restore
-    src: /tmp/deployment_wordpress_restore.yml
+    namespace: wordpress-r
+    src: /tmp/deployment_wordpress_r.yml
   tags: restore

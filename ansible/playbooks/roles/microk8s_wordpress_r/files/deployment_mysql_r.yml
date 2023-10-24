@@ -2,63 +2,63 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-restore
-  namespace: wordpress-restore
+  name: mysql-r
+  namespace: wordpress-r
 spec:
   selector:
-    app: mysql-restore
+    app: mysql-r
   ports:
-  - name: mysql-restore
+  - name: mysql-r
     protocol: TCP
     port: 3306
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-restore
-  namespace: wordpress-restore
+  name: mysql-r
+  namespace: wordpress-r
   labels:
-    app: mysql-restore
+    app: mysql-r
 spec:
   selector:
     matchLabels:
-      app: mysql-restore
+      app: mysql-r
   template:
     metadata:
       labels:
-        app: mysql-restore
+        app: mysql-r
     spec:
       containers:
       - image: mysql:8.0
-        name: mysql-restore
+        name: mysql-r
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret-restore
+              name: mysql-secret-r
               key: ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret-restore
+              name: mysql-secret-r
               key: DATABASE
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret-restore
+              name: mysql-secret-r
               key: USER
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret-restore
+              name: mysql-secret-r
               key: PASSWORD
         ports:
         - containerPort: 3306
-          name: mysql-restore
+          name: mysql-r
         volumeMounts:
-        - name: mysql-persistent-storage-restore
+        - name: mysql-persistent-storage-r
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-persistent-storage-restore
+      - name: mysql-persistent-storage-r
         persistentVolumeClaim:
-          claimName: mysql-pv-claim-restore
+          claimName: mysql-pv-claim-r

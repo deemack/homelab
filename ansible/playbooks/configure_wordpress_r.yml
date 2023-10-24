@@ -4,4 +4,4 @@
   become: true
   gather_facts: yes
   roles:
-    - microk8s_wordpress_restore
+    - microk8s_wordpress_r

@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "wordpress-restore"
-  namespace: wordpress-restore
+  name: "wordpress-r"
+  namespace: wordpress-r
 spec:
   type: NodePort
   ports:
@@ -12,4 +12,4 @@ spec:
       targetPort: 80
       nodePort: 30333
   selector:
-    app: "wordpress-restore"
+    app: "wordpress-r"

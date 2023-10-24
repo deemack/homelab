@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wordpress-restore
+  name: mysql-r
   labels:
     type: local
 spec:
@@ -11,4 +11,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/storage/wordpress-restore/wordpress-restore"
+    path: "/mnt/storage/wordpress-r/mysql-r"
