@@ -2,63 +2,63 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql_restore
+  name: mysql-restore
   namespace: wordpress-restore
 spec:
   selector:
-    app: mysql_restore
+    app: mysql-restore
   ports:
-  - name: mysql_restore
+  - name: mysql-restore
     protocol: TCP
     port: 3306
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql_restore
+  name: mysql-restore
   namespace: wordpress-restore
   labels:
-    app: mysql_restore
+    app: mysql-restore
 spec:
   selector:
     matchLabels:
-      app: mysql_restore
+      app: mysql-restore
   template:
     metadata:
       labels:
-        app: mysql_restore
+        app: mysql-restore
     spec:
       containers:
       - image: mysql:8.0
-        name: mysql_restore
+        name: mysql-restore
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret_restore
+              name: mysql-secret-restore
               key: ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: mysql-secret_restore
+              name: mysql-secret-restore
               key: DATABASE
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: mysql-secret_restore
+              name: mysql-secret-restore
               key: USER
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-secret_restore
+              name: mysql-secret-restore
               key: PASSWORD
         ports:
         - containerPort: 3306
-          name: mysql_restore_restore
+          name: mysql-restore
         volumeMounts:
-        - name: mysql-persistent-storage_restore
+        - name: mysql-persistent-storage-restore
           mountPath: /var/lib/mysql
       volumes:
-      - name: mysql-persistent-storage_restore
+      - name: mysql-persistent-storage-restore
         persistentVolumeClaim:
-          claimName: mysql-pv-claim_restore
+          claimName: mysql-pv-claim-restore
