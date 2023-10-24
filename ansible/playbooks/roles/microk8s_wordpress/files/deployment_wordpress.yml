@@ -15,12 +15,12 @@ spec:
         app: wordpress
     spec:
       containers:
-      - image: wordpress:6.2.1-apache
+      - image: wordpress:6.3.2-apache
         imagePullPolicy: Always
         name: wordpress
         env:
         - name: WORDPRESS_DB_HOST
-          value: "mysql"
+          value: mysql
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -28,7 +28,7 @@ spec:
               key: PASSWORD
         - name: WORDPRESS_DB_USER
           valueFrom:
-            secretkeyRef:
+            secretKeyRef:
               name: mysql-secret
               key: USER
         ports:
