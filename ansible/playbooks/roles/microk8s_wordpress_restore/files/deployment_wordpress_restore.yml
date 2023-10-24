@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress_restore
+  name: wordpress-restore
   namespace: wordpress-restore
   labels:
-    app: wordpress_restore
+    app: wordpress-restore
 spec:
   selector:
     matchLabels:
-      app: wordpress_restore
+      app: wordpress-restore
   template:
     metadata:
       labels:
-        app: wordpress_restore
+        app: wordpress-restore
     spec:
       containers:
       - image: wordpress:6.3.2-apache
