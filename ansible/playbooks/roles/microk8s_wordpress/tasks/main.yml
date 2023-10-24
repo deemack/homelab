@@ -1,0 +1,86 @@
+---
+- name: Create mount points on MicroK8s Node | mysql
+  ansible.builtin.file:
+    path: /mnt/storage/wordpress/mysql
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | wordpress
+  ansible.builtin.file:
+    path: /mnt/storage/wordpress/wordpress
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Create wordpress namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: wordpress
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_wordpress/files/
+    dest: /tmp/
+
+- name: Apply Secrets
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/secrets_mysql.yml
+
+- name: Create Persistent Volume | wordpress
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/pv_wordpress.yml
+
+- name: Create Persistent Volume Claim | wordpress
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/pvc_wordpress.yml
+
+- name: Create Persistent Volume | wordpress_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/pv_mysql.yml
+
+- name: Create Persistent Volume Claim | wordpress_db
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/pvc_mysql.yml
+
+- name: Create mysql Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/deployment_mysql.yml
+
+- name: Create wordpress-mysql Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/service_wordpress.yml
+
+- name: Create wordpress Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: wordpress
+    src: /tmp/deployment_wordpress.yml
