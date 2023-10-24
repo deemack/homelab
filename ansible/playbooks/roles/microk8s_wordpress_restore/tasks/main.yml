@@ -6,6 +6,7 @@
     mode: '0755'
     owner: nobody
     group: nogroup
+  tags: restore
 
 - name: Create mount points on MicroK8s Node | wordpress_restore
   ansible.builtin.file:
@@ -14,6 +15,7 @@
     mode: '0777'
     owner: nobody
     group: nogroup
+  tags: restore
 
 - name: Create wordpress_restore namespace
   kubernetes.core.k8s:
@@ -22,12 +24,14 @@
     api_version: v1
     kind: Namespace
     state: present
+  tags: restore
 
 - name: Copy k8s yaml files to Node
   become: true
   copy:
     src: /home/vagrant/ansible/playbooks/roles/microk8s_wordpress_restore/files/
     dest: /tmp/
+  tags: restore
 
 - name: Apply Secrets
   kubernetes.core.k8s:
@@ -35,6 +39,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/secrets_mysql_restore.yml
+  tags: restore
 
 - name: Create Persistent Volume | wordpress_restore
   kubernetes.core.k8s:
@@ -42,6 +47,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/pv_wordpress_restore.yml
+  tags: restore
 
 - name: Create Persistent Volume Claim | wordpress_restore
   kubernetes.core.k8s:
@@ -49,6 +55,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/pvc_wordpress_restore.yml
+  tags: restore
 
 - name: Create Persistent Volume | wordpress_db_restore
   kubernetes.core.k8s:
@@ -56,6 +63,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/pv_mysql_restore.yml
+  tags: restore
 
 - name: Create Persistent Volume Claim | wordpress_db_restore
   kubernetes.core.k8s:
@@ -63,6 +71,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/pvc_mysql_restore.yml
+  tags: restore
 
 - name: Create mysql_restore Deployment
   kubernetes.core.k8s:
@@ -70,6 +79,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/deployment_mysql_restore.yml
+  tags: restore
 
 - name: Create wordpress-mysql_restore Service
   kubernetes.core.k8s:
@@ -77,6 +87,7 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/service_wordpress_restore.yml
+  tags: restore
 
 - name: Create wordpress_restore Deployment
   kubernetes.core.k8s:
@@ -84,3 +95,4 @@
     state: present
     namespace: wordpress_restore
     src: /tmp/deployment_wordpress_restore.yml
+  tags: restore
