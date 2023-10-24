@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql_restore
-  namespace: wordpress_restore
+  namespace: wordpress-restore
 spec:
   selector:
     app: mysql_restore
@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql_restore
-  namespace: wordpress_restore
+  namespace: wordpress-restore
   labels:
     app: mysql_restore
 spec:

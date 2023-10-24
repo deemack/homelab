@@ -20,7 +20,7 @@
 - name: Create wordpress_restore namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    name: wordpress_restore
+    name: wordpress-restore
     api_version: v1
     kind: Namespace
     state: present
@@ -37,7 +37,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/secrets_mysql_restore.yml
   tags: restore
 
@@ -45,7 +45,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/pv_wordpress_restore.yml
   tags: restore
 
@@ -53,7 +53,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/pvc_wordpress_restore.yml
   tags: restore
 
@@ -61,7 +61,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/pv_mysql_restore.yml
   tags: restore
 
@@ -69,7 +69,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/pvc_mysql_restore.yml
   tags: restore
 
@@ -77,7 +77,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/deployment_mysql_restore.yml
   tags: restore
 
@@ -85,7 +85,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/service_wordpress_restore.yml
   tags: restore
 
@@ -93,6 +93,6 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress_restore
+    namespace: wordpress-restore
     src: /tmp/deployment_wordpress_restore.yml
   tags: restore

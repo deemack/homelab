@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress_restore
-  namespace: wordpress_restore
+  namespace: wordpress-restore
   labels:
     app: wordpress_restore
 spec:
