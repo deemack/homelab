@@ -1,14 +1,18 @@
 #!/bin/sh
 NC='\033[0m'
+CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BEELINK="192.168.1.100"
 ANSIBLE_VM="192.168.56.10"
 VAGRANT_MAJOR="2.3.7"
 VAGRANT_VER="$VAGRANT_MAJOR-1"
 
+printf "${CYAN}Please provides some system variables${NC}\n"
+read -p "Enter the physical host hostname: " HOSTNAME
+read -p "Enter the physical host IP address: " HOSTIP
+
 printf "${GREEN}Add entry to fstab for SSD${NC}\n"
-uuid=$(lsblk -no uuid /dev/sda)
+uuid=$(lsblk -no uuid /dev/sda | xargs)
 fstab_entry="UUID=""$uuid"" /mnt/storage ntfs permissions,locale=en_US.utf8 0 2"
 echo $fstab_entry | sudo tee -a /etc/fstab
 sudo mount -a
@@ -18,7 +22,7 @@ sudo sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/nee
 
 printf "${GREEN}Updating hosts file on Beelink${NC}\n"
 echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts
-echo "$BEELINK beelink" | sudo tee -a /etc/hosts
+echo "$HOSTIP $HOSTNAME" | sudo tee -a /etc/hosts
 
 printf "${GREEN}Updating and Upgrading Linux${NC}\n"
 sudo apt update && sudo apt upgrade -y
@@ -55,6 +59,9 @@ sudo touch /home/vagrant/.ssh/authorized_keys
 printf "${GREEN}Copying public key from host to shared vagrant folder${NC}\n"
 sudo cp /home/vagrant/.ssh/id_rsa.pub .
 
+printf "${GREEN}Remove ansible vm if exists${NC}\n"
+vboxmanage controlvm ansible_vm poweroff
+vboxmanage unregistervm ansible_vm --delete
 printf "${GREEN}Creating Ansible VM with vagrant${NC}\n"
 vagrant up
 
@@ -70,13 +77,13 @@ ssh-keyscan -H -p 22 -t ecdsa ansible >> /home/dave/.ssh/known_hosts
 
 printf "${GREEN}Updating hosts file on VM${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "echo "$ANSIBLE_VM ansible" | sudo tee -a /etc/hosts"
-sshpass -p vagrant ssh vagrant@ansible "echo "$BEELINK beelink" | sudo tee -a /etc/hosts"
+sshpass -p vagrant ssh vagrant@ansible "echo "$HOSTIP $HOSTNAME" | sudo tee -a /etc/hosts"
 
 printf "${YELLOW}Public keys Beelink to VM${NC}\n"
 printf "${GREEN}Copying beelink public key file contents to virtual machine authorized_keys file${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "sudo cat /vagrant/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys"
 printf "${GREEN}Copying beelink public key file contents to virtual machine known_hosts file${NC}\n"
-sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa beelink >> ~/.ssh/known_hosts" >/dev/null
+sshpass -p vagrant ssh vagrant@ansible "ssh-keyscan -H -p 22 -t ecdsa $HOSTNAME >> ~/.ssh/known_hosts" >/dev/null
 
 printf "${YELLOW}Public keys VM to Beelink${NC}\n"
 printf "${GREEN}Copying virtual machine public key file to shared folder${NC}\n"
@@ -117,7 +124,7 @@ sshpass -p vagrant ssh vagrant@ansible "sudo cp -r /vagrant/ansible ."
 printf "${GREEN}Adding host IP to hosts file on virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "cat <<EOF | sudo tee /home/vagrant/hosts
 [homelab]
-beelink
+$HOSTNAME
 EOF"
 
 printf "${GREEN}Testing ping/pong connection from virtual machine to host${NC}\n"
