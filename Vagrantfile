@@ -5,13 +5,16 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure(2) do |config|
-  config.vm.provider "virtualbox"
+Vagrant.configure(2) do |config|  
   config.vm.define "ansible", primary: true do |ansible|
     ansible.vm.hostname = 'ansible'
     ansible.vm.box = "bento/ubuntu-22.04"
     ansible.vm.network :private_network, ip: "192.168.56.10"
     ansible.vm.provision :shell, privileged: false, path: "provision_vm.sh"
+
+    ansible.vm.provider "virtualbox" do |vb|
+      vb.name = "ansible_vm"
+    end    
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
     rsync__auto: true
 end 
