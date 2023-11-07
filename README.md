@@ -118,6 +118,10 @@ playbooks/
 site.yml
 ```
 
-Start VMs commandline virtualbox
-VBoxManage list vms 
-VBoxManage startvm "GUID" --type headless
+- Start VMs commandline virtualbox
+- VBoxManage list vms 
+- VBoxManage startvm "GUID" --type headless
+- Delete VMs commandline virtualbox
+- vboxmanage controlvm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc poweroff
+- vboxmanage unregistervm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc --delete
+- 
