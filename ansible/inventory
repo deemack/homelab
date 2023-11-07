@@ -1,2 +1,3 @@
-[microk8s]
-beelink
+[hosts]
+beelinkprod
+beelinkdev
