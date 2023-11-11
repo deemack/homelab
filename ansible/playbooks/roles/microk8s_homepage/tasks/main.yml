@@ -7,13 +7,28 @@
     kind: Namespace
     state: present
 
-- name: Copy k8s yaml files to Node
+- name: Copy k8s config files to Node
   become: true
   copy:
     src: /home/vagrant/ansible/playbooks/roles/microk8s_homepage/files/
     dest: /tmp/
 
-- name: Create Config Map
+- name: Fetch IP address of Host
+  vars:
+    command: "hostname -I | awk '{print $1}'"
+  shell: "{{ command }}"
+  register: host_ip
+
+- name: Host IP
+  debug:
+    var: host_ip.stdout
+
+- name: Create Config Map from Template
+  template:
+    src: /tmp/configmap_homepage.j2
+    dest: /tmp/configmap_homepage.yml
+
+- name: Apply Config Map
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
