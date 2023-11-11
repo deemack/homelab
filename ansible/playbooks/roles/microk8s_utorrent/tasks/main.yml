@@ -42,7 +42,7 @@
     namespace: utorrent
     src: /tmp/deployment_utorrent.yml
 
-- name: Create wordpress-mysql Service
+- name: Create utorrent Service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
