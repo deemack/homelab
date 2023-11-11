@@ -1,7 +1,24 @@
 ---
-- import_playbook: configure_microk8s_cluster.yml
-- import_playbook: configure_dlna_server.yml
-- import_playbook: configure_samba.yml
-- import_playbook: configure_wikijs.yml
-- import_playbook: configure_homepage.yml
-- import_playbook: configure_wordpress.yml
+- name: Configure the microK8s cluster
+  import_playbook: configure_microk8s_cluster.yml
+  tags: cluster
+
+- name: Configure DLNA
+  import_playbook: configure_dlna_server.yml
+  tags: dlna
+
+- name: Configure Samba
+  import_playbook: configure_samba.yml
+  tags: samba
+
+- name: Configure Wikijs
+  import_playbook: configure_wikijs.yml
+  tags: wikijs
+
+- name: Configure Homepage
+  import_playbook: configure_homepage.yml
+  tags: homepage
+
+- name: Configure Wordpress
+  import_playbook: configure_wordpress.yml
+  tags: wordpress
