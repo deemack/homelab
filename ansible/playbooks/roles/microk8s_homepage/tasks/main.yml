@@ -26,7 +26,7 @@
 - name: Create Config Map from Template
   become: true
   template:
-    src: /home/vagrant/ansible/playbooks/roles/microk8s_homepage/files/configmap_homepage.j2
+    src: configmap_homepage.j2
     dest: /tmp/configmap_homepage.yml
 
 - name: Apply Config Map
