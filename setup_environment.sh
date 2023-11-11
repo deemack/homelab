@@ -118,6 +118,9 @@ sshpass -p vagrant ssh vagrant@ansible "sudo apt install ansible -y"
 printf "${GREEN}Installing pip to virtual machine${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "sudo apt install pip -y"
 
+printf "${GREEN}Installing python library netaddr to ansible virtual machine${NC}\n"
+sshpass -p vagrant ssh vagrant@ansible "pip install netaddr"
+
 printf "${GREEN}Installing ansible-galaxy collection: community.general${NC}\n"
 sshpass -p vagrant ssh vagrant@ansible "ansible-galaxy collection install community.general"
 
