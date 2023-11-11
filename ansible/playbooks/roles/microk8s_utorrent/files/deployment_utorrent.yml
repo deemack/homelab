@@ -19,9 +19,9 @@ spec:
       containers:
       - env:
         - name: GID
-          value: "1001"
+          value: "1000"
         - name: UID
-          value: "1001"
+          value: "1000"
         image: yurilchuk/utorrent-kubernetes:latest
         name: utorrent
         ports:
@@ -32,8 +32,6 @@ spec:
         - mountPath: /utorrent/shared/
           name: utorrent-data
       restartPolicy: Always
-      securityContext:
-        supplementalGroups: [65534]
       volumes:
       - name: utorrent-data
         persistentVolumeClaim:
