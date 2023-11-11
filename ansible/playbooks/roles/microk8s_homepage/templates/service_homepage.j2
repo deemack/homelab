@@ -6,6 +6,7 @@ spec:
   selector:
     app: nginx
   type: LoadBalancer
+  loadBalancerIP: {{ host_ip.stdout | ipmath(1) }}
   ports:
   - name: http
     port: 80

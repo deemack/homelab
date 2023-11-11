@@ -8,7 +8,7 @@
   command:
     cmd: mount -a
   become: true
-  
+
 - name: install pre-requisites
   pip:
     name:
@@ -80,6 +80,16 @@
     groups: microk8s
     append: yes
 
+- name: Fetch IP address of Host
+  vars:
+    command: "hostname -I | awk '{print $1}'"
+  shell: "{{ command }}"
+  register: host_ip
+
+- name: Host IP
+  debug:
+    var: host_ip.stdout
+
 - name: Configure MetalLB
   become: yes
   block:
@@ -100,6 +110,12 @@
       until: kubectl_get_pod.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
       retries: 20
       delay: 15
+
+    - name: Create MetalLB IPAddressPool from template
+      become: true
+      template:
+        src: ipaddresspool_metallb.j2
+        dest: /tmp/ipaddresspool_metallb.yml
 
     - name: Apply MetalLB IPAddressPool
       kubernetes.core.k8s:
