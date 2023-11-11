@@ -23,13 +23,13 @@
   debug:
     var: host_ip.stdout
 
-- name: Create Config Map from Template
+- name: Create configMap from template
   become: true
   template:
     src: configmap_homepage.j2
     dest: /tmp/configmap_homepage.yml
 
-- name: Apply Config Map
+- name: Apply  configMap
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
@@ -42,6 +42,12 @@
     state: present
     namespace: homepage
     src: /tmp/deployment_homepage.yml
+
+- name: Create service from template
+  become: true
+  template:
+    src: service_homepage.j2
+    dest: /tmp/service_homepage.yml
 
 - name: Create service
   kubernetes.core.k8s:
