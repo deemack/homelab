@@ -1,0 +1,50 @@
+---
+- name: Create mount points on MicroK8s Node | utorrent
+  ansible.builtin.file:
+    path: /mnt/storage/utorrent
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create utorrent namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: utorrent
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_utorrent/files/
+    dest: /tmp/
+
+- name: Create Persistent Volume | utorrent
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: utorrent
+    src: /tmp/pv_utorrent.yml
+
+- name: Create Persistent Volume Claim | utorrent
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: utorrent
+    src: /tmp/pvc_utorrent.yml
+
+- name: Create utorrent Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: utorrent
+    src: /tmp/deployment_utorrent.yml
+
+- name: Create wordpress-mysql Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: utorrent
+    src: /tmp/service_utorrent.yml
