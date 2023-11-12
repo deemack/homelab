@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: utorrent
+  namespace: utorrent
+  labels:
+    app: utorrent
+spec:
+  selector:
+      matchLabels:
+        app: utorrent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: utorrent
+    spec:
+      containers:
+      - env:
+        - name: GID
+          value: "1000"
+        - name: UID
+          value: "1000"
+        image: yurilchuk/utorrent-kubernetes:latest
+        name: utorrent
+        ports:
+        - containerPort: 8080
+        - containerPort: 6881
+        resources: {}
+        volumeMounts:
+        - mountPath: /utorrent/
+          name: utorrent-data
+      restartPolicy: Always
+      volumes:
+      - name: utorrent-data
+        persistentVolumeClaim:
+          claimName: utorrent-pv-claim
+status: {}

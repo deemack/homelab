@@ -22,3 +22,7 @@
 - name: Configure Wordpress
   import_playbook: configure_wordpress.yml
   tags: wordpress
+
+- name: Configure utorrent
+  import_playbook: configure_utorrent.yml
+  tags: utorrent
