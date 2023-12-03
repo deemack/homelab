@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       port: 3306
       targetPort: 3306
-      nodePort: 30333
+      nodePort: 30334
   selector:
     app: "database"
