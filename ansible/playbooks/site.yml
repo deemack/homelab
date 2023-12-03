@@ -26,3 +26,7 @@
 - name: Configure utorrent
   import_playbook: configure_utorrent.yml
   tags: utorrent
+
+- name: Configure database
+  import_playbook: configure_database.yml
+  tags: database
