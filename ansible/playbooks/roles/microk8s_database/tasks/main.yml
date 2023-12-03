@@ -1,24 +1,16 @@
 ---
-- name: Create mount points on MicroK8s Node | mysql
+- name: Create mount points on MicroK8s Node | database
   ansible.builtin.file:
-    path: /mnt/storage/wordpress/mysql
+    path: /mnt/storage/database
     state: directory
     mode: '0755'
     owner: nobody
     group: nogroup
 
-- name: Create mount points on MicroK8s Node | wordpress
-  ansible.builtin.file:
-    path: /mnt/storage/wordpress/wordpress
-    state: directory
-    mode: '0777'
-    owner: nobody
-    group: nogroup
-
-- name: Create wordpress namespace
+- name: Create database namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    name: wordpress
+    name: database
     api_version: v1
     kind: Namespace
     state: present
@@ -33,54 +25,33 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress
-    src: /tmp/secrets_mysql.yml
+    namespace: database
+    src: /tmp/secrets_database.yml
 
-- name: Create Persistent Volume | wordpress
+- name: Create Persistent Volume | database
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress
-    src: /tmp/pv_wordpress.yml
+    namespace: database
+    src: /tmp/pv_database.yml
 
-- name: Create Persistent Volume Claim | wordpress
+- name: Create Persistent Volume Claim | database
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress
-    src: /tmp/pvc_wordpress.yml
+    namespace: database
+    src: /tmp/pvc_database.yml
 
-- name: Create Persistent Volume | wordpress_db
+- name: Create database Deployment
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress
-    src: /tmp/pv_mysql.yml
+    namespace: database
+    src: /tmp/deployment_database.yml
 
-- name: Create Persistent Volume Claim | wordpress_db
+- name: Create database Service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: wordpress
-    src: /tmp/pvc_mysql.yml
-
-- name: Create mysql Deployment
-  kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    namespace: wordpress
-    src: /tmp/deployment_mysql.yml
-
-- name: Create wordpress-mysql Service
-  kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    namespace: wordpress
-    src: /tmp/service_wordpress.yml
-
-- name: Create wordpress Deployment
-  kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    namespace: wordpress
-    src: /tmp/deployment_wordpress.yml
+    namespace: database
+    src: /tmp/service_database.yml
