@@ -1,0 +1,57 @@
+---
+- name: Create mount points on MicroK8s Node | database
+  ansible.builtin.file:
+    path: /mnt/storage/database
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create database namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: database
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_database/files/
+    dest: /tmp/
+
+- name: Apply Secrets
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: database
+    src: /tmp/secrets_database.yml
+
+- name: Create Persistent Volume | database
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: database
+    src: /tmp/pv_database.yml
+
+- name: Create Persistent Volume Claim | database
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: database
+    src: /tmp/pvc_database.yml
+
+- name: Create database Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: database
+    src: /tmp/deployment_database.yml
+
+- name: Create database Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: database
+    src: /tmp/service_database.yml
