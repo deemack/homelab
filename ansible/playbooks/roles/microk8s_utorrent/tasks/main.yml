@@ -1,7 +1,7 @@
 ---
 - name: Create mount points on MicroK8s Node | utorrent
   ansible.builtin.file:
-    path: "{ item }"
+    path: "{{ item }}"
     state: directory
     mode: '0755'
     owner: nobody
