@@ -1,11 +1,16 @@
 ---
 - name: Create mount points on MicroK8s Node | utorrent
   ansible.builtin.file:
-    path: /mnt/storage/utorrent
+    path: "{ item }"
     state: directory
     mode: '0755'
     owner: nobody
     group: nogroup
+  loop:
+    - /mnt/storage/utorrent
+    - /mnt/storage/utorrent/done
+    - /mnt/storage/utorrent/download
+    - /mnt/storage/utorrent/torrent
 
 - name: Create utorrent namespace
   kubernetes.core.k8s:
