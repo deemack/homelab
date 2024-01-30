@@ -80,6 +80,12 @@ Media can be copied into the **TV** and **Movies** folders for playback by the m
 The backups for **wikijs** are also available on the share.
 
 ----
+### utorrent
+- Access the utorrent web interface via **192.168.1.100:30333/gui**
+- When adding a torrent, choose the sub-path directory as **/shared**.
+- The completed downloads will be available in the **utorrent/done** folder over the network share.
+
+----
 ### Wikijs
 - Access WikiJs via **192.168.1.100:30331**
 - Upon installation, the wikijs databse will be restored provided a backup exists in 2TB SSD at /mnt/storage/backup/wikijs/
