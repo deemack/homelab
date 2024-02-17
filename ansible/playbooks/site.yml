@@ -32,6 +32,6 @@
   tags: database
 
 - name: Configure cloud vm
-  import_playbook: cloud_vm.yml
+  import_playbook: configure_cloud_vm.yml
   tags: cloud_vm
   when: inventory_hostname in groups["cloud"]
