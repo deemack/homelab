@@ -1,0 +1,7 @@
+---
+- name: Configure cloud VM
+  hosts: cloud
+  become: true
+  gather_facts: no
+  roles:
+    - cloud_vm

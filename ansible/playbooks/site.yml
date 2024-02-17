@@ -30,3 +30,10 @@
 - name: Configure database
   import_playbook: configure_database.yml
   tags: database
+
+- name: Configure cloud vm
+  import_playbook: configure_cloud_vm.yml
+  tags:
+    - cloud_vm
+    - never
+  when: inventory_hostname in groups["cloud"]

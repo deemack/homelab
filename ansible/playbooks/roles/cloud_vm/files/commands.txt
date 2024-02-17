@@ -1,0 +1,5 @@
+
+useradd -m -s /bin/bash vagrant
+passwd vagrant
+mkdir /home/vagrant/.ssh
+nano /home/vagrant/.ssh/authorized_keys
