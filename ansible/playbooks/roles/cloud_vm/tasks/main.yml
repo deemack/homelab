@@ -1,12 +1,47 @@
 ---
-vars_prompt:
-- name: CloudIP
-  prompt: Enter the Cloud VM Public IP Address
-  private: false
+- name: STEP 1 - Run these commands on your cloud VM as root.
+  debug:
+    var: commands
+  vars:
+    commands: "{{ lookup('file', 'commands.txt') }}"
 
-- debug:
-  msg: |-
-    Log into the cloud VM Console as Root and run the following commands:
-    useradd -m -s /bin/bash vagrant && passwd vagrant
-    mkdir /home/vagrant/.ssh
-    nano /home/vagrant/.ssh/authorized_keys
+- name: Looking up Ansible Host public ssh key.
+  set_fact:
+    pub_key: "{{ lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}"
+
+- name: STEP 2 - Paste the public ssh key to your cloud VM authorized_keys file.
+  debug:
+    msg:
+      "\n {{ pub_key.split('\n') |replace(\"'\",'') |replace(\"[\",'') |replace(\"]\",'')}}"
+
+- name: STEP 3 - Run these commands on your cloud VM as root.
+  debug:
+    var: commands2
+  vars:
+    commands2: "{{ lookup('file', 'commands2.txt') }}"
+
+- name: Get Public IP of cloud VM.
+  pause:
+    prompt: "\nFollow the steps above, then enter the Public IP address of the cloud VM"
+    echo: yes
+  register: result
+
+- name: Registering Using Input
+  set_fact:
+    public_ip: "{{ result.user_input }}"
+
+- name: Verifying Public IP of cloud VM.
+  debug:
+    var: public_ip
+
+- pause:
+    prompt: "\nPress Enter if the Public IP address was entered correctly.\nOr Press 'A' to Abort"
+
+- name: Add Public IP to hosts Ansible hosts file
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ public_ip }} {{ inventory_hostname }}"
+  delegate_to: localhost
+
+- name: Test whether connection is successful
+  ansible.builtin.ping:

@@ -1,0 +1,4 @@
+
+chmod -R go= ~/.ssh
+chown -R vagrant:vagrant ~/.ssh
+usermod -aG sudo vagrant
