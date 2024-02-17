@@ -1,0 +1,12 @@
+---
+vars_prompt:
+- name: CloudIP
+  prompt: Enter the Cloud VM Public IP Address
+  private: false
+
+- debug:
+  msg: |-
+    Log into the cloud VM Console as Root and run the following commands:
+    useradd -m -s /bin/bash vagrant && passwd vagrant
+    mkdir /home/vagrant/.ssh
+    nano /home/vagrant/.ssh/authorized_keys

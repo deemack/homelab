@@ -1,3 +1,9 @@
-[beelink]
-beelinkprod
-beelinkdev
+all:
+  children:
+    beelink:
+      hosts:
+        beelinkprod
+        beelinkdev
+    cloud:
+      hosts:
+        bluegoat
