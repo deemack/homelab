@@ -113,6 +113,7 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 ----
 ### BlueGoat Web Server
 ![Digital Ocean DNS Entries](./images/digital_ocean_dns.jpg)
+<img src="./images/digital_ocean_dns.jpg" width="128"/>
 
 ----
 
