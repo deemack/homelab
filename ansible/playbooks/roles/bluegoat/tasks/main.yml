@@ -16,7 +16,7 @@
     state: started
     enabled: yes
 
-- name: Create mount web directories | bluegoat
+- name: Create web directories | bluegoat
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -31,8 +31,8 @@
 
 - name: Copy index files to webserver
   copy:
-    src: {{ item.src }}
-    dest: {{ item.sdest }}
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: www-data
     group: www-data
     mode: 0755
@@ -40,6 +40,30 @@
     - { src: index_bluegoat.html, dest: /var/www/bluegoat.org/html/index.html }
     - { src: index_chores.html, dest: /var/www/chores.bluegoat.org/html/index.html }
     - { src: index_cypher.html, dest: /var/www/cypher.bluegoat.org/html/index.html }
+
+- name: Copy server blocks to webserver
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { src: bluegoat_block, dest: /etc/nginx/sites-available/bluegoat.org }
+    - { src: chores_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
+    - { src: cypher_block, dest: /etc/nginx/sites-available/cypher.bluegoat.org }
+
+- name: Create symbolic links
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ item }}
+    dest: /etc/nginx/sites-enabled/
+    owner: root
+    group: root
+    state: link
+  with_items:
+   - bluegoat.org
+   - chores.bluegoat.org
+   - cypher.bluegoat.org
 
 - name: Recursively change ownership and mode of /var/www
   ansible.builtin.file:
@@ -49,30 +73,6 @@
     owner: www-data
     group: www-data
     mode: 0755
-
-- name: Copy iserver blocks to webserver
-  copy:
-    src: {{ item.src }}
-    dest: {{ item.sdest }}
-    owner: root
-    group: root
-    mode: 0644
-  with_items:
-    - { src: bluegoat_block, dest: /etc/nginx/sites-available/bluegoat.org }
-    - { src: chores_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
-    - { src: cypher_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
-
-- name: Create symbolic links
-  ansible.builtin.file:
-    src: /etc/nginx/sites-available/{{ item }}
-    dest: /etc/nginx/sites-enabled
-    owner: root
-    group: root
-    state: link
-  with_items:
-   - bluegoat.org
-   - chores.bluegoat.org
-   - cypher.bluegoat.org
 
 - name: restart nginx
   service: name=nginx state=restarted
