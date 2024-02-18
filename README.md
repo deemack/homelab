@@ -7,17 +7,17 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD
- 
+
 > __Note__: The Physical Host has the following partition scheme:
-> 
+>
 >     SWAP   16G
 >     EXT4   50G   /
 >     EXT4   398G  /var
->     FAT32  1G    /boot/efi           
+>     FAT32  1G    /boot/efi
 
 > __Note__: The 2TB SATA SSD should be formatted as NTFS and contain the following folder structure:
-> 
->     
+>
+>
 >     ├── Movies
 >     ├── TV
 >     ├── backup
@@ -44,9 +44,9 @@ ansible-playbook -i inventory playbooks/site.yml -K
   * Samba Share
   * wikijs
   * Kubernetes Dashboard
-    
+
 ### Access the Kubernetes Dashboard from an external PC
-* Run the following command on the Physical Host  
+* Run the following command on the Physical Host
 ```
 token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
 microk8s kubectl -n kube-system describe secret $token
@@ -111,7 +111,14 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 - Next goto Deployments, and restart the **wikijs** deployment
 
 ----
+### BlueGoat Web Server
+- You will need to add DNS entries for your sub-domains in Digital Ocean.
+- <img src="./images/digital_ocean_dns.jpg" width="500"/>
 
+- You will also need to point your Domain hosting service DNS to Digital Ocean's DNS servers.
+- <img src="./images/domain_host_dns.jpg" width="500"/>
+
+----
 
 
 ### Ansible Directory Structure
@@ -119,15 +126,17 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 playbooks/
   roles/
     role1/
+      files/
       tasks/
         main.yml
+      templates/
 site.yml
+role_playbook
 ```
 
 - Start VMs commandline virtualbox
-- VBoxManage list vms 
+- VBoxManage list vms
 - VBoxManage startvm "GUID" --type headless
 - Delete VMs commandline virtualbox
 - vboxmanage controlvm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc poweroff
 - vboxmanage unregistervm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc --delete
-- 
