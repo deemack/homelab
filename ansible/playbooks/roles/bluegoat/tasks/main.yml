@@ -24,24 +24,55 @@
     owner: www-data
     group: www-data
   loop:
-    - /var/www/html/bluegoat.org
-    - /var/www/html/chores.bluegoat.org
-    - /var/www/html/cypher.bluegoat.org
-    - /var/www/html/matt.bluegoat.org
-    - /var/www/html/jon.bluegoat.org
-    - /var/www/html/robbie.bluegoat.org
-    - /var/www/html/scott.bluegoat.org
-    - /var/www/html/trent.bluegoat.org
-    - /var/www/html/zaid.bluegoat.org
+    - /var/www/bluegoat.org/html
+    - /var/www/chores.bluegoat.org/html
+    - /var/www/cypher.bluegoat.org/html
+    - /var/www/matt.bluegoat.org/html
 
-  - name: Copy index files to webserver
-    copy:
-      src: {{ item.src }}
-      dest: {{ item.sdest }}
-      owner: www-data
-      group: www-data
-      mode: u=rw, g=rw, o=r
-    with_items:
-      - { src: index.html, dest: /var/www/html/bluegoat.org/index.html }
-      - { src: index_chores.html, dest: /var/www/html/chores.bluegoat.org/index.html }
-      - { src: index_cypher.html, dest: /var/www/html/cypher.bluegoat.org/index.html }
+- name: Copy index files to webserver
+  copy:
+    src: {{ item.src }}
+    dest: {{ item.sdest }}
+    owner: www-data
+    group: www-data
+    mode: 0755
+  with_items:
+    - { src: index_bluegoat.html, dest: /var/www/bluegoat.org/html/index.html }
+    - { src: index_chores.html, dest: /var/www/chores.bluegoat.org/html/index.html }
+    - { src: index_cypher.html, dest: /var/www/cypher.bluegoat.org/html/index.html }
+
+- name: Recursively change ownership and mode of /var/www
+  ansible.builtin.file:
+    path: /var/www
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+    mode: 0755
+
+- name: Copy iserver blocks to webserver
+  copy:
+    src: {{ item.src }}
+    dest: {{ item.sdest }}
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { src: bluegoat_block, dest: /etc/nginx/sites-available/bluegoat.org }
+    - { src: chores_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
+    - { src: cypher_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
+
+- name: Create symbolic links
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ item }}
+    dest: /etc/nginx/sites-enabled
+    owner: root
+    group: root
+    state: link
+  with_items:
+   - bluegoat.org
+   - chores.bluegoat.org
+   - cypher.bluegoat.org
+
+- name: restart nginx
+  service: name=nginx state=restarted
