@@ -111,7 +111,10 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 - Next goto Deployments, and restart the **wikijs** deployment
 
 ----
+### BlueGoat Web Server
+![Digital Ocean DNS Entries](./images/digital_ocean_dns.jpg)
 
+----
 
 
 ### Ansible Directory Structure
@@ -119,9 +122,12 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 playbooks/
   roles/
     role1/
+      files/
       tasks/
         main.yml
+      templates/
 site.yml
+role_playbook
 ```
 
 - Start VMs commandline virtualbox
@@ -130,4 +136,3 @@ site.yml
 - Delete VMs commandline virtualbox
 - vboxmanage controlvm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc poweroff
 - vboxmanage unregistervm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc --delete
-- 
