@@ -40,6 +40,7 @@
     - { src: index_bluegoat.html, dest: /var/www/bluegoat.org/html/index.html }
     - { src: index_chores.html, dest: /var/www/chores.bluegoat.org/html/index.html }
     - { src: index_cypher.html, dest: /var/www/cypher.bluegoat.org/html/index.html }
+    - { src: index_matt.html, dest: /var/www/matt.bluegoat.org/html/index.html }
 
 - name: Copy server blocks to webserver
   copy:
@@ -50,8 +51,6 @@
     mode: 0644
   with_items:
     - { src: bluegoat_block, dest: /etc/nginx/sites-available/bluegoat.org }
-    - { src: chores_block, dest: /etc/nginx/sites-available/chores.bluegoat.org }
-    - { src: cypher_block, dest: /etc/nginx/sites-available/cypher.bluegoat.org }
 
 - name: Create symbolic links
   ansible.builtin.file:
@@ -62,8 +61,6 @@
     state: link
   with_items:
    - bluegoat.org
-   - chores.bluegoat.org
-   - cypher.bluegoat.org
 
 - name: Recursively change ownership and mode of /var/www
   ansible.builtin.file:
