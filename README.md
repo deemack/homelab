@@ -112,8 +112,10 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 
 ----
 ### BlueGoat Web Server
-![Digital Ocean DNS Entries](./images/digital_ocean_dns.jpg)
-<img src="./images/digital_ocean_dns.jpg" width="128"/>
+- You will need to add DNS entries for your sub-domains in Digital Ocean.
+<img src="./images/digital_ocean_dns.jpg" width="500"/>
+- You will also need to point your Domain hosting service DNS to Digital Ocean's DNS servers.
+- <img src="./images/domain_host_dns.jpg" width="500"/>
 
 ----
 
