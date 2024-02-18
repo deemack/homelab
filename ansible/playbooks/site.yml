@@ -31,9 +31,16 @@
   import_playbook: configure_database.yml
   tags: database
 
-- name: Configure cloud vm
+- name: Configure cloud vm for Ansible provisioning
   import_playbook: configure_cloud_vm.yml
   tags:
     - cloud_vm
+    - never
+  when: inventory_hostname in groups["cloud"]
+
+- name: Configure bluegoat webserver
+  import_playbook: configure_bluegoat.yml
+  tags:
+    - bluegoat
     - never
   when: inventory_hostname in groups["cloud"]

@@ -1,0 +1,7 @@
+---
+- name: Configure BlueGoat webserver
+  hosts: cloud
+  become: true
+  gather_facts: no
+  roles:
+    - bluegoat
