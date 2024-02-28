@@ -112,7 +112,6 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 
 ----
 ### BlueGoat Web Server
-- You will need a Digital Ocean VM named bluegoat with a public IP.
 - You will need to add DNS entries for your sub-domains in Digital Ocean.
 - <img src="./images/digital_ocean_dns.jpg" width="500"/>
 
@@ -120,7 +119,29 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 - <img src="./images/domain_host_dns.jpg" width="500"/>
 
 ----
+### Chores Java Web App
+- Shell script to run the jar (stored at /mnt/storage/chores.jar in this case)
+```
+#!/bin/bash
+java -jar /mnt/storage/chores.jar
 
+```
+
+- /etc/systemd/system/chores.service
+```
+[Unit]
+Description=Chores app service
+[Service]
+Type=Simple
+RestartSec=1
+User=dave
+ExecStart=/bin/bash /mnt/storage/chores.sh
+WorkingDirectory=/mnt/storage
+[Install]
+WantedBy=multi-user.target
+```
+
+----
 
 ### Ansible Directory Structure
 ```
