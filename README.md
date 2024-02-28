@@ -112,6 +112,7 @@ pg_restore -U wikijs -d wikijs /var/lib/postgresql/data/<desired wikibackup file
 
 ----
 ### BlueGoat Web Server
+- You will need a Digital Ocean VM named bluegoat with a public IP.
 - You will need to add DNS entries for your sub-domains in Digital Ocean.
 - <img src="./images/digital_ocean_dns.jpg" width="500"/>
 
