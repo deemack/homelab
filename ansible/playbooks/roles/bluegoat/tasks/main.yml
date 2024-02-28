@@ -10,6 +10,11 @@
     name: nginx
     state: latest
 
+- name: Install Java
+  apt:
+    name: openjdk-21-jre
+    state: latest
+
 - name: Ensure nginx is running
   systemd:
     name: nginx
