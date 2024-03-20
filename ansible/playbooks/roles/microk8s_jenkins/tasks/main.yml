@@ -1,0 +1,57 @@
+---
+- name: Create mount points on MicroK8s Node | jenkins
+  ansible.builtin.file:
+    path: /mnt/storage/jenkins
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create jenkins namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: jenkins
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_jenkins/files/
+    dest: /tmp/
+
+- name: Create Service Account | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/service_account_jenkins.yml
+
+- name: Create Persistent Volume | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/pv_jenkins.yml
+
+- name: Create Persistent Volume Claim | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/pvc_jenkins.yml
+
+- name: Create jenkins Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/deployment_jenkins.yml
+
+- name: Create jenkins Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/service_jenkins.yml

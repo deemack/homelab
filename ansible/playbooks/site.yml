@@ -37,3 +37,8 @@
     - cloud_vm
     - never
   when: inventory_hostname in groups["cloud"]
+
+- name: Configure Jenkins
+  import_playbook: configure_jenkins.yml
+  tags:
+    - jenkins
