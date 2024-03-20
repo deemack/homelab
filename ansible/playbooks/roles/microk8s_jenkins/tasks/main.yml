@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: /mnt/storage/jenkins
     state: directory
-    mode: '0755'
+    mode: '0777'
     owner: nobody
     group: nogroup
 
