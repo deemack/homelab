@@ -7,17 +7,17 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD
- 
+
 > __Note__: The Physical Host has the following partition scheme:
-> 
+>
 >     SWAP   16G
 >     EXT4   50G   /
 >     EXT4   398G  /var
->     FAT32  1G    /boot/efi           
+>     FAT32  1G    /boot/efi
 
 > __Note__: The 2TB SATA SSD should be formatted as NTFS and contain the following folder structure:
-> 
->     
+>
+>
 >     ├── Movies
 >     ├── TV
 >     ├── backup
@@ -44,9 +44,9 @@ ansible-playbook -i inventory playbooks/site.yml -K
   * Samba Share
   * wikijs
   * Kubernetes Dashboard
-    
+
 ### Access the Kubernetes Dashboard from an external PC
-* Run the following command on the Physical Host  
+* Run the following command on the Physical Host
 ```
 token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
 microk8s kubectl -n kube-system describe secret $token
@@ -142,7 +142,48 @@ WantedBy=multi-user.target
 ```
 
 ----
+### Jenkins
+- So far the Jenkins pod deploys, but needs to be configured manually afterwards
+- The pod console displays the one-time server password to unlock Jenkins
+- The jenkins-admin secret can be displayed by running on the microk8s cluster
+```
+microk8s kubectl get secret -n jenkins jenkins-admin -o jsonpath='{.data.token}' | base64 --decode
+```
+- Download the *Kubernetes* plugin
+- Manage Jenkins>Clouds>New Cloud>Create 'kubernetes' cloud
+- Add Credential of type Secret Text and paste in the value obtained from
+```
+microk8s kubectl get secret -n jenkins jenkins-admin -o jsonpath='{.data.token}' | base64 --decode
+```
+- Tick WebSocket
+- Jenkins URL is
+```
+http://jenkins-service.jenkins.svc.cluster.local:8080
+```
+- Pod Labels
+```
+Key: jenkins
+Value: agent
+```
+- Pod Templates section
+- Click Add a pod template
+```
+Name: kube-agent
+Namespace: jenkins
+Labels: kubeagent
+Usage: Only build jobs with label expressions matching this node
+```
+Service Account: jenkins-admin
+- Dashboard>New Item>name it kubeagent
+- Select Freestyle project
+- Give a desciption
+- Check Restrict withere this project can be run and put the Label Expression as kubeagent
+- Add Build Step of Execute Shell and enter
+```
+echo "Hello there"
+```
 
+----
 ### Ansible Directory Structure
 ```
 playbooks/
@@ -157,7 +198,7 @@ role_playbook
 ```
 
 - Start VMs commandline virtualbox
-- VBoxManage list vms 
+- VBoxManage list vms
 - VBoxManage startvm "GUID" --type headless
 - Delete VMs commandline virtualbox
 - vboxmanage controlvm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc poweroff
