@@ -2,8 +2,8 @@ all:
   children:
     beelink:
       hosts:
-        beelinkprod
-        beelinkdev
+        beelinkprod:
+        beelinkdev:
     cloud:
       hosts:
         bluegoat
