@@ -6,4 +6,4 @@ all:
         beelinkdev:
     cloud:
       hosts:
-        bluegoat
+        bluegoat:
