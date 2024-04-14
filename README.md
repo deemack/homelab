@@ -141,6 +141,10 @@ WorkingDirectory=/mnt/storage
 WantedBy=multi-user.target
 ```
 
+
+A container can reach another container in the same pod by its FQND
+For example, a ubuntu container can connect to an sql server on a pod called choresdb that is in the same pod
+mysql -u root -h choresdb.chores.svc.cluster.local -P 3306 -p
 ----
 
 ### Ansible Directory Structure
