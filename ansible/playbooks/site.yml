@@ -31,6 +31,10 @@
   import_playbook: configure_database.yml
   tags: database
 
+- name: Configure chores app
+  import_playbook: configure_chores.yml
+  tags: chores
+
 - name: Configure cloud vm
   import_playbook: configure_cloud_vm.yml
   tags:
