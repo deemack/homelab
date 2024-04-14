@@ -15,15 +15,12 @@ spec:
         app: chores
     spec:
       containers:
-      - image: deemack/chores-java:1.0.0
+      - image: deemack/chores-java:1.0
         imagePullPolicy: Always
         name: chores
         ports:
         - containerPort: 8080
           name: chores
-        volumeMounts:
-        - name: chores-persistent-storage
-          mountPath: /var/www/html
       volumes:
       - name: chores-persistent-storage
         persistentVolumeClaim:
