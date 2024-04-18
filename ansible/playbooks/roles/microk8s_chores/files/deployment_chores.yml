@@ -15,13 +15,9 @@ spec:
         app: chores
     spec:
       containers:
-      - image: deemack/chores-java:1.0
+      - image: deemack/chores-java:1.4
         imagePullPolicy: Always
         name: chores
         ports:
         - containerPort: 8080
           name: chores
-      volumes:
-      - name: chores-persistent-storage
-        persistentVolumeClaim:
-          claimName: chores-pv-claim
