@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chores
+  namespace: chores
+  labels:
+    app: chores
+spec:
+  selector:
+    matchLabels:
+      app: chores
+  template:
+    metadata:
+      labels:
+        app: chores
+    spec:
+      containers:
+      - image: deemack/chores-java:1.5
+        imagePullPolicy: Always
+        name: chores
+        ports:
+        - containerPort: 8080
+          name: chores

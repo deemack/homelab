@@ -1,0 +1,86 @@
+---
+- name: Create mount points on MicroK8s Node | choresdb
+  ansible.builtin.file:
+    path: /mnt/storage/chores/choresdb
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | chores
+  ansible.builtin.file:
+    path: /mnt/storage/chores/chores
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Create chores namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: chores
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_chores/files/
+    dest: /tmp/
+
+- name: Apply Secrets
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/secrets_choresdb.yml
+
+- name: Create Persistent Volume | chores
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/pv_chores.yml
+
+- name: Create Persistent Volume Claim | chores
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/pvc_chores.yml
+
+- name: Create Persistent Volume | choresdb
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/pv_choresdb.yml
+
+- name: Create Persistent Volume Claim | choresdb
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/pvc_choresdb.yml
+
+- name: Create choresdb Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/deployment_choresdb.yml
+
+- name: Create choresdb Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/service_chores.yml
+
+- name: Create chores Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: chores
+    src: /tmp/deployment_chores.yml
