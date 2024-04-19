@@ -31,7 +31,7 @@ data:
     /* Create two columns/boxes that floats next to each other */
     nav {
       float: left;
-      width: 35%;
+      width: 50%;
       height: 500px; /* only for demonstration, should be removed */
       background: #7cc;
       padding: 20px;
@@ -99,7 +99,12 @@ data:
       <nav>
         <ul>
           <h4>Tools</h4>
-          <li><a href="http://{{ host_ip.stdout }}:32000" target="_blank">Jenkins</a></li>  
+          <li><a href="http://{{ host_ip.stdout }}:32000" target="_blank">Jenkins</a></li>
+        </ul>
+      </nav>
+
+      <nav>
+        <ul>
           <h4>Wikis</h4>
           <li><a href="http://{{ host_ip.stdout }}:30331" target="_blank">Wiki</a></li>          
           <li><a href="http://{{ host_ip.stdout }}:30332" target="_blank">Wordpress</a></li>
