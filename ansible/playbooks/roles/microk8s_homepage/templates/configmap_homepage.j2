@@ -31,9 +31,17 @@ data:
     /* Create two columns/boxes that floats next to each other */
     nav {
       float: left;
-      width: 30%;
-      height: 300px; /* only for demonstration, should be removed */
+      width: 35%;
+      height: 500px; /* only for demonstration, should be removed */
       background: #7cc;
+      padding: 20px;
+    }
+
+    nav-admin {
+      float: right;
+      width: 30%;
+      height: 500px; /* only for demonstration, should be removed */
+      background: #7cd;
       padding: 20px;
     }
 
@@ -44,10 +52,17 @@ data:
       padding: 0;
     }
 
+    /* Style the list inside the menu */
+    nav-admin ul {
+      list-style-type: none;
+      font-size: 35px;
+      padding: 0;
+    }
+
     article {
       float: left;
       padding: 20px;
-      width: 70%;
+      width: 100%;
       background-color: #f1f1f1;
       height: 300px; /* only for demonstration, should be removed */
       font-size: 25px;
@@ -85,14 +100,29 @@ data:
     <section>
       <nav>
         <ul>
-          <li><a href="http://{{ host_ip.stdout }}:30331" target="_blank">Wiki</a></li>
-          <li><a href="http://192.168.1.71/admin" target="_blank">Pi-hole</a></li>
-          <li><a href="https://{{ host_ip.stdout }}:32075" target="_blank">Dashboard</a></li>
-          <li><a href="http://{{ host_ip.stdout }}:30332" target="_blank">Wordpress</a></li>
-          <li><a href="http://{{ host_ip.stdout }}:30333/gui" target="_blank">uTorrent</a></li>
-
+          <h4>Apps</h4>
+          <li><a href="http://{{ host_ip.stdout }}:30336/chores" target="_blank">Chores</a></li>
         </ul>
       </nav>
+
+      <nav>
+        <ul>
+          <h4>Tools</h4>
+          <li><a href="http://{{ host_ip.stdout }}:32000" target="_blank">Jenkins</a></li>  
+          <h4>Wikis</h4>
+          <li><a href="http://{{ host_ip.stdout }}:30331" target="_blank">Wiki</a></li>          
+          <li><a href="http://{{ host_ip.stdout }}:30332" target="_blank">Wordpress</a></li>
+        </ul>
+      </nav>
+
+      <nav-admin>
+        <ul>
+          <h4>Admin</h4>
+          <li><a href="https://{{ host_ip.stdout }}:32075" target="_blank">Dashboard</a></li>
+          <li><a href="http://192.168.1.71/admin" target="_blank">Pi-hole</a></li>
+        </ul>
+      </nav-admin>
+
         <article>
         <h1>Word of the day!</h1>
         <p><script src="https://wordsmith.org/words/word3.js" type="text/javascript">
