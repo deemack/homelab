@@ -35,6 +35,10 @@
   import_playbook: configure_chores.yml
   tags: chores
 
+- name: Configure vpn
+  import_playbook: configure_vpn.yml
+  tags: vpn
+
 - name: Configure cloud vm
   import_playbook: configure_cloud_vm.yml
   tags:

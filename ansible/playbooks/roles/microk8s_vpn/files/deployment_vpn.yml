@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpn
+  namespace: vpn
+  labels:
+    app: vpn
+spec:
+  selector:
+      matchLabels:
+        app: vpn
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vpn
+    spec:
+      containers:
+      - env:
+        image: alpine:3.19.1
+        name: vpn
+        volumeMounts:
+        - mountPath: /tmp
+          name: vpn-data
+      restartPolicy: Always
+      volumes:
+      - name: vpn-data
+        persistentVolumeClaim:
+          claimName: vpn-pv-claim
