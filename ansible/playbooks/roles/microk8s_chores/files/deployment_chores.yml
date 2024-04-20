@@ -15,7 +15,7 @@ spec:
         app: chores
     spec:
       containers:
-      - image: deemack/chores-java:1.5
+      - image: deemack/chores-java:1.7
         imagePullPolicy: Always
         name: chores
         ports:
