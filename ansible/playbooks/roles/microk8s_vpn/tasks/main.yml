@@ -1,0 +1,45 @@
+---
+- name: Create mount points on MicroK8s Node | vpn
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+  loop:
+    - /mnt/storage/vpn
+
+- name: Create vpn namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: vpn
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_vpn/files/
+    dest: /tmp/
+
+- name: Create Persistent Volume | vpn
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: vpn
+    src: /tmp/pv_vpn.yml
+
+- name: Create Persistent Volume Claim | vpn
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: vpn
+    src: /tmp/pvc_vpn.yml
+
+- name: Create vpn Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: vpn
+    src: /tmp/deployment_vpn.yml
