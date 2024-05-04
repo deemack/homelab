@@ -149,7 +149,12 @@ WantedBy=multi-user.target
 ```
 microk8s kubectl get secret -n jenkins jenkins-admin -o jsonpath='{.data.token}' | base64 --decode
 ```
-- Download the *Kubernetes* plugin
+- manage Jenkins > Tools > JDK Installations > Add JDK > name 'jdk' > Install Automatically
+- manage Jenkins > Tools > Maven Installations > Add Maven > name 'maven' > Install Automatically\
+- Save
+- Add Github SSH creds
+```
+Manage Jenkins > Credentials > System > Global credentials (unrestricted) > Add Credential > Kind = SSH Username with Private Key, username = jenkins-github,  Enter Key directly and Add then Create
 - Manage Jenkins>Clouds>New Cloud>Create 'kubernetes' cloud
 - Add Credential of type Secret Text and paste in the value obtained from
 ```
@@ -168,10 +173,18 @@ Value: agent
 - Pod Templates section
 - Click Add a pod template
 ```
-Name: kube-agent
+Name: maven
 Namespace: jenkins
-Labels: kubeagent
+Labels: maven
 Usage: Only build jobs with label expressions matching this node
+```
+
+- Container Template
+```
+Name : maven
+Docker image: eclipse-temurin:21-jdk-alpine
+Always Pull ticked
+Working Directory: /home/jenkins/agent
 ```
 Service Account: jenkins-admin
 - Dashboard>New Item>name it kubeagent
