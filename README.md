@@ -143,6 +143,18 @@ WantedBy=multi-user.target
 
 ----
 ### Jenkins
+- create ssh keypair for jenkins-github access
+```
+ssh-keygen -t rsa -b 4096 -C "deemack" -f C:\temp\id_rsa
+```
+- Upload the public key to github ssh
+- Add the keypair as a secret to Kubernetes
+- Copy it to /mnt/storage on the kubernetes host
+- Add it as a secret in Kubernetes
+```
+sudo microk8s kubectl create secret generic jenkins-github --from-file=ssh-privatekey=/mnt/storage/id_rsa --from-file=ssh-publickey=/mnt/storage/id_rsa.pub
+```
+- It will be used to connect to private repos in the jenkins seed job
 - So far the Jenkins pod deploys, but needs to be configured manually afterwards
 - The pod console displays the one-time server password to unlock Jenkins
 - The jenkins-admin secret can be displayed by running on the microk8s cluster
