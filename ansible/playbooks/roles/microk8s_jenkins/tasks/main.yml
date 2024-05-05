@@ -55,3 +55,20 @@
     state: present
     namespace: jenkins
     src: /tmp/service_jenkins.yml
+
+- name: Create ssh keypair on the ansible controller for Jenkins to access Github
+  openssh_keypair:
+    path: /tmp/id_jenkins_github
+
+- name: Create secret from template
+  become: true
+  template:
+    src: secret_jenkins.j2
+    dest: /tmp/secret_jenkins.yml
+
+- name: Create secret
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/secret_jenkins.yml
