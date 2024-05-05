@@ -7,17 +7,17 @@ This project deploys a MicroK8s cluster along with some containers to a Physical
   * 16GB Ram
   * 500GB NVMe SSD
   * 2TB SATA SSD
- 
+
 > __Note__: The Physical Host has the following partition scheme:
-> 
+>
 >     SWAP   16G
 >     EXT4   50G   /
 >     EXT4   398G  /var
->     FAT32  1G    /boot/efi           
+>     FAT32  1G    /boot/efi
 
 > __Note__: The 2TB SATA SSD should be formatted as NTFS and contain the following folder structure:
-> 
->     
+>
+>
 >     ├── Movies
 >     ├── TV
 >     ├── backup
@@ -44,9 +44,9 @@ ansible-playbook -i inventory playbooks/site.yml -K
   * Samba Share
   * wikijs
   * Kubernetes Dashboard
-    
+
 ### Access the Kubernetes Dashboard from an external PC
-* Run the following command on the Physical Host  
+* Run the following command on the Physical Host
 ```
 token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
 microk8s kubectl -n kube-system describe secret $token
@@ -146,7 +146,73 @@ A container can reach another container in the same pod by its FQND
 For example, a ubuntu container can connect to an sql server on a pod called choresdb that is in the same pod
 mysql -u root -h choresdb.chores.svc.cluster.local -P 3306 -p
 ----
+### Jenkins
+- create ssh keypair for jenkins-github access
+```
+ssh-keygen -t rsa -b 4096 -C "deemack" -f C:\temp\id_rsa
+```
+- Upload the public key to github ssh
+- Add the keypair as a secret to Kubernetes
+- Copy it to /mnt/storage on the kubernetes host
+- Add it as a secret in Kubernetes
+```
+sudo microk8s kubectl create secret generic jenkins-github --from-file=ssh-privatekey=/mnt/storage/id_rsa --from-file=ssh-publickey=/mnt/storage/id_rsa.pub
+```
+- It will be used to connect to private repos in the jenkins seed job
+- So far the Jenkins pod deploys, but needs to be configured manually afterwards
+- The pod console displays the one-time server password to unlock Jenkins
+- The jenkins-admin secret can be displayed by running on the microk8s cluster
+```
+microk8s kubectl get secret -n jenkins jenkins-admin -o jsonpath='{.data.token}' | base64 --decode
+```
+- manage Jenkins > Tools > JDK Installations > Add JDK > name 'jdk' > Install Automatically
+- manage Jenkins > Tools > Maven Installations > Add Maven > name 'maven' > Install Automatically\
+- Save
+- Add Github SSH creds
+```
+Manage Jenkins > Credentials > System > Global credentials (unrestricted) > Add Credential > Kind = SSH Username with Private Key, username = jenkins-github,  Enter Key directly and Add then Create
+- Manage Jenkins>Clouds>New Cloud>Create 'kubernetes' cloud
+- Add Credential of type Secret Text and paste in the value obtained from
+```
+microk8s kubectl get secret -n jenkins jenkins-admin -o jsonpath='{.data.token}' | base64 --decode
+```
+- Tick WebSocket
+- Jenkins URL is
+```
+http://jenkins-service.jenkins.svc.cluster.local:8080
+```
+- Pod Labels
+```
+Key: jenkins
+Value: agent
+```
+- Pod Templates section
+- Click Add a pod template
+```
+Name: maven
+Namespace: jenkins
+Labels: maven
+Usage: Only build jobs with label expressions matching this node
+```
 
+- Container Template
+```
+Name : maven
+Docker image: eclipse-temurin:21-jdk-alpine
+Always Pull ticked
+Working Directory: /home/jenkins/agent
+```
+Service Account: jenkins-admin
+- Dashboard>New Item>name it kubeagent
+- Select Freestyle project
+- Give a desciption
+- Check Restrict withere this project can be run and put the Label Expression as kubeagent
+- Add Build Step of Execute Shell and enter
+```
+echo "Hello there"
+```
+
+----
 ### Ansible Directory Structure
 ```
 playbooks/
@@ -161,7 +227,7 @@ role_playbook
 ```
 
 - Start VMs commandline virtualbox
-- VBoxManage list vms 
+- VBoxManage list vms
 - VBoxManage startvm "GUID" --type headless
 - Delete VMs commandline virtualbox
 - vboxmanage controlvm 51eb1f74-7c48-44c4-a1ce-ab6038a708bc poweroff

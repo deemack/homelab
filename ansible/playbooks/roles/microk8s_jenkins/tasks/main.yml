@@ -1,0 +1,108 @@
+---
+- name: Create mount points on MicroK8s Node | jenkins
+  ansible.builtin.file:
+    path: /mnt/storage/jenkins
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: nogroup
+
+- name: Create jenkins namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: jenkins
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_jenkins/files/
+    dest: /tmp/
+
+- name: Create Service Account | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/service_account_jenkins.yml
+
+- name: Create Persistent Volume | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/pv_jenkins.yml
+
+- name: Create Persistent Volume Claim | jenkins
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/pvc_jenkins.yml
+
+- name: Create jenkins Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/deployment_jenkins.yml
+
+- name: Create jenkins Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/service_jenkins.yml
+    
+- name: Create ssh keypair on the ansible controller for Jenkins to access Github
+  openssh_keypair:
+    path: /tmp/id_jenkins_github
+    force: true
+  delegate_to: localhost
+
+- name: Allow keypair files to be read
+  become: true
+  ansible.builtin.file:
+    path: /tmp/id_jenkins_github.pub
+    owner: root
+    group: root
+    mode: '1777'
+  delegate_to: localhost
+
+- name: Allow keypair files to be read
+  become: true
+  ansible.builtin.file:
+    path: /tmp/id_jenkins_github
+    owner: root
+    group: root
+    mode: '1777'
+  delegate_to: localhost
+
+- name: Create secret from template
+  become: true
+  template:
+    src: secret_jenkins.j2
+    dest: /tmp/secret_jenkins.yml
+
+- name: Create secret
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: jenkins
+    src: /tmp/secret_jenkins.yml
+
+- name: Remove SSH keypair files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /tmp/id_jenkins_github.pub
+    - /tmp/id_jenkins_github
+  delegate_to: localhost
+
+- name: Remove Kubernetes Secret template
+  ansible.builtin.file:
+    path: /tmp/secret_jenkins.yml
+    state: absent
