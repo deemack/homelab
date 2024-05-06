@@ -2,6 +2,6 @@
 - name: Configure cloud VM
   hosts: cloud
   become: true
-  gather_facts: no
+  gather_facts: false
   roles:
     - cloud_vm
