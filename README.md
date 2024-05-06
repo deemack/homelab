@@ -1,3 +1,67 @@
+# This DrawIO is using a LoadBalancer and Ingress so that you can access it via 192.168.1.202.
+No ports required, this could be useful for setting DNS and Https
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: drawio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drawio
+  template:
+    metadata:
+      labels:
+        app: drawio
+    spec:
+      containers:
+      - name: drawio
+        image: jgraph/drawio
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "800m"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: drawio-service
+spec:
+  selector:
+    app: drawio
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: default
+  name: drawio-ingress
+  labels:
+    name: drawio-ingress
+spec:
+  rules:
+  - host: home-cloud-drawio
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: drawio-service
+            port: 
+              number: 5001
+  ingressClassName: "nginx"
+```
+
+
 # homelab
 This project deploys a MicroK8s cluster along with some containers to a Physical Host.
 
