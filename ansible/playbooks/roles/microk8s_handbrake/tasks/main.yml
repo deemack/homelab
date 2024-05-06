@@ -7,6 +7,30 @@
     owner: nobody
     group: nogroup
 
+- name: Create mount points on MicroK8s Node | handbrake_config
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/config
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | handbrake_watch
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/watch
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | handbrake_output
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/output
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
 - name: Create handbrake namespace
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config

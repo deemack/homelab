@@ -39,9 +39,9 @@ spec:
         - name: handbrake-config
           mountPath: /config
         - name: handbrake-watch
-          mountpath: /watch
+          mountPath: /watch
         - name: handbrake-output
-          mountpath: /output
+          mountPath: /output
       volumes:
       - name: handbrake-config
         persistentVolumeClaim:
