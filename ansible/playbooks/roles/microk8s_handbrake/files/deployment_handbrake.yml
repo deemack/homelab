@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: handbrake
+  namespace: handbrake
+spec:
+  selector:
+    app: handbrake
+  ports:
+  - name: handbrake
+    protocol: TCP
+    port: 5800
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: handbrake
+  namespace: handbrake
+  labels:
+    app: handbrake
+spec:
+  selector:
+    matchLabels:
+      app: handbrake
+  template:
+    metadata:
+      labels:
+        app: handbrake
+    spec:
+      containers:
+      - image: jlesage:handbrake
+        name: handbrake
+        env:
+        ports:
+        - containerPort: 5800
+          name: handbrake
+        volumeMounts:
+        - name: handbrake-persistent-storage
+          mountPath: /config
+        - name: handbrake-watch
+          mountpath: /watch
+        - name: handbrake-output
+          mountpath: /output
+      volumes:
+      - name: handbrake-persistent-storage
+        persistentVolumeClaim:
+          claimName: handbrake-pv-claim
+      - name: handbrake-watch
+        persistentVolumeClaim:
+          claimName: handbrake-pv-claim
+      - name: handbrake-output
+        persistentVolumeClaim:
+          claimName: handbrake-pv-claim
