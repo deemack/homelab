@@ -1,0 +1,102 @@
+---
+- name: Create mount points on MicroK8s Node | handbrake
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | handbrake_config
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/config
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | handbrake_watch
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/watch
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create mount points on MicroK8s Node | handbrake_output
+  ansible.builtin.file:
+    path: /mnt/storage/handbrake/output
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create handbrake namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: handbrake
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_handbrake/files/
+    dest: /tmp/
+
+- name: Create Persistent Volume | handbrake_config
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pv_handbrake_config.yml
+
+- name: Create Persistent Volume Claim | handbrake_config
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pvc_handbrake_config.yml
+
+- name: Create Persistent Volume | handbrake_watch
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pv_handbrake_watch.yml
+
+- name: Create Persistent Volume Claim | handbrake_watch
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pvc_handbrake_watch.yml
+
+- name: Create Persistent Volume | handbrake_output
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pv_handbrake_output.yml
+
+- name: Create Persistent Volume Claim | handbrake_output
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pvc_handbrake_output.yml
+
+- name: Create handbrake Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/deployment_handbrake.yml
+
+- name: Create handbrake Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/service_handbrake.yml

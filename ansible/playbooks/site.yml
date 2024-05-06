@@ -46,3 +46,8 @@
   import_playbook: configure_jenkins.yml
   tags:
     - jenkins
+
+- name: Configure Handbrake
+  import_playbook: configure_handbrake.yml
+  tags:
+    - handbrake
