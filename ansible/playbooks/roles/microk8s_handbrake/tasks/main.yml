@@ -21,19 +21,47 @@
     src: /home/vagrant/ansible/playbooks/roles/microk8s_handbrake/files/
     dest: /tmp/
 
-- name: Create Persistent Volume | handbrake
+- name: Create Persistent Volume | handbrake_config
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: handbrake
-    src: /tmp/pv_handbrake.yml
+    src: /tmp/pv_handbrake_config.yml
 
-- name: Create Persistent Volume Claim | handbrake
+- name: Create Persistent Volume Claim | handbrake_config
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: handbrake
-    src: /tmp/pvc_handbrake.yml
+    src: /tmp/pvc_handbrake_config.yml
+
+- name: Create Persistent Volume | handbrake_watch
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pv_handbrake_watch.yml
+
+- name: Create Persistent Volume Claim | handbrake_watch
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pvc_handbrake_watch.yml
+
+- name: Create Persistent Volume | handbrake_output
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pv_handbrake_output.yml
+
+- name: Create Persistent Volume Claim | handbrake_output
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: handbrake
+    src: /tmp/pvc_handbrake_output.yml
 
 - name: Create handbrake Deployment
   kubernetes.core.k8s:
