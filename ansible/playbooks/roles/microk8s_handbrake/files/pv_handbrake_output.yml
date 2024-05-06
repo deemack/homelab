@@ -10,5 +10,9 @@ spec:
     storage: 20Gi
   accessModes:
     - ReadWriteOnce
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: handbrake
+    name: handbrake-pv-claim-output
   hostPath:
-    path: "/mnt/storage/handbrake"
+    path: "/mnt/storage/handbrake/output"

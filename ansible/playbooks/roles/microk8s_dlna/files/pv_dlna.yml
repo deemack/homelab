@@ -5,6 +5,9 @@ metadata:
   labels:
     type: local
 spec:
+  claimRef:
+    namespace: handbrake
+    name: handbrake-persistent-storage
   storageClassName: manual
   capacity:
     storage: 10Gi

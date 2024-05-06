@@ -29,26 +29,26 @@ spec:
         app: handbrake
     spec:
       containers:
-      - image: jlesage:handbrake
+      - image: jlesage/handbrake
         name: handbrake
         env:
         ports:
         - containerPort: 5800
           name: handbrake
         volumeMounts:
-        - name: handbrake-persistent-storage
+        - name: handbrake-config
           mountPath: /config
         - name: handbrake-watch
           mountpath: /watch
         - name: handbrake-output
           mountpath: /output
       volumes:
-      - name: handbrake-persistent-storage
+      - name: handbrake-config
         persistentVolumeClaim:
-          claimName: handbrake-pv-claim
+          claimName: handbrake-pv-claim-config
       - name: handbrake-watch
         persistentVolumeClaim:
-          claimName: handbrake-pv-claim
+          claimName: handbrake-pv-claim-watch
       - name: handbrake-output
         persistentVolumeClaim:
-          claimName: handbrake-pv-claim
+          claimName: handbrake-pv-claim-output
