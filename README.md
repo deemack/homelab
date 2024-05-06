@@ -1,3 +1,6 @@
+# here is an thing to try
+https://stackoverflow.com/questions/70089374/openvpn-client-in-kubernetes-pod
+
 # homelab
 This project deploys a MicroK8s cluster along with some containers to a Physical Host.
 
