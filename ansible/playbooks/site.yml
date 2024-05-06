@@ -51,3 +51,8 @@
   import_playbook: configure_handbrake.yml
   tags:
     - handbrake
+
+- name: Configure nexus
+  import_playbook: configure_nexus.yml
+  tags:
+    - nexus

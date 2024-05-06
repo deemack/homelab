@@ -1,0 +1,50 @@
+---
+- name: Create mount points on MicroK8s Node | nexus
+  ansible.builtin.file:
+    path: "/mnt/storage/nexus"
+    state: directory
+    mode: '0755'
+    owner: nobody
+    group: nogroup
+
+- name: Create nexus namespace
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    name: nexus
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Copy k8s yaml files to Node
+  become: true
+  copy:
+    src: /home/vagrant/ansible/playbooks/roles/microk8s_nexus/files/
+    dest: /tmp/
+
+- name: Create Persistent Volume | nexus
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: nexus
+    src: /tmp/pv_nexus.yml
+
+- name: Create Persistent Volume Claim | nexus
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: nexus
+    src: /tmp/pvc_nexus.yml
+
+- name: Create nexus Deployment
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: nexus
+    src: /tmp/deployment_nexus.yml
+
+- name: Create nexus Service
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: nexus
+    src: /tmp/service_nexus.yml

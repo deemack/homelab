@@ -2,6 +2,6 @@
 - name: Configure Database
   hosts: beelink
   become: true
-  gather_facts: yes
+  gather_facts: true
   roles:
     - microk8s_database
