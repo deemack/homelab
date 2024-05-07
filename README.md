@@ -1,3 +1,172 @@
+# Install the nginx-ingress controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+# Create CA key
+```
+openssl genrsa -out ca.key 2048
+```
+# Get IP of Loadbalancer
+kubectl get services ingress-nginx-controller -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
+# Add Loadbalancer DNS entry to pi-hole
+# Generate CA cert (used IP in testing but maybe can use DNS from pihole)
+```
+openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN=x.x.x.x.nip.io" -days 1024 -out ca.crt -extensions san -config <(
+echo '[req]';
+echo 'distinguished_name=req';
+echo '[san]';
+echo 'subjectAltName=DNS:x.x.x.x.nip.io')
+```
+# Create TLS Secret
+```
+kubectl create secret tls ingress-local-tls \
+  --cert=ca.crt \
+  --key=ca.key -n default
+```
+# Add to Ingress
+```
+tls:
+    - hosts:
+        - "x.x.x.x.nip.io"
+      secretName: ingress-local-tls
+```
+# This was the Ingress for the drawio
+```
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: drawio-ingress
+  namespace: default
+  uid: 6a2e31e9-2634-4498-8fcc-02d9cd007f40
+  resourceVersion: '16100666'
+  generation: 1
+  creationTimestamp: '2024-05-07T02:23:03Z'
+  labels:
+    name: drawio-ingress
+  managedFields:
+    - manager: dashboard
+      operation: Update
+      apiVersion: networking.k8s.io/v1
+      time: '2024-05-07T02:23:03Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:labels:
+            .: {}
+            f:name: {}
+        f:spec:
+          f:ingressClassName: {}
+          f:rules: {}
+          f:tls: {}
+    - manager: nginx-ingress-controller
+      operation: Update
+      apiVersion: networking.k8s.io/v1
+      time: '2024-05-07T02:48:11Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      subresource: status
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - 192.168.1.203.nip.io
+      secretName: ingress-local-tls
+  rules:
+    - host: 192.168.1.203.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: drawio-service
+                port:
+                  number: 80
+status:
+  loadBalancer:
+    ingress:
+      - ip: 192.168.1.203
+```
+# Browse to https://192.168.1.203.nip.io/ and download the cert from the address bar error
+# Use MMC - certificates to import it to root
+# Import it to root in Chrome as well
+
+# the draw service incase needed
+```
+kind: Service
+apiVersion: v1
+metadata:
+  name: drawio-service
+  namespace: default
+  uid: 7e7a6738-1814-4c1d-bd73-6a19620cdc5e
+  resourceVersion: '15998291'
+  creationTimestamp: '2024-05-06T12:07:01Z'
+  annotations:
+    metallb.universe.tf/ip-allocated-from-pool: first-pool
+  managedFields:
+    - manager: dashboard
+      operation: Update
+      apiVersion: v1
+      time: '2024-05-06T12:07:01Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          f:allocateLoadBalancerNodePorts: {}
+          f:externalTrafficPolicy: {}
+          f:internalTrafficPolicy: {}
+          f:ports:
+            .: {}
+            k:{"port":80,"protocol":"TCP"}:
+              .: {}
+              f:port: {}
+              f:protocol: {}
+              f:targetPort: {}
+          f:selector: {}
+          f:sessionAffinity: {}
+          f:type: {}
+    - manager: controller
+      operation: Update
+      apiVersion: v1
+      time: '2024-05-06T12:07:02Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:metallb.universe.tf/ip-allocated-from-pool: {}
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      subresource: status
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 31775
+  selector:
+    app: drawio
+  clusterIP: 10.152.183.198
+  clusterIPs:
+    - 10.152.183.198
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  allocateLoadBalancerNodePorts: true
+  internalTrafficPolicy: Cluster
+status:
+  loadBalancer:
+    ingress:
+      - ip: 192.168.1.202
+```
+
+
+
+
 # homelab
 This project deploys a MicroK8s cluster along with some containers to a Physical Host.
 
