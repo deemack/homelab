@@ -51,28 +51,28 @@
   command:
     cmd: kubectl enable host-access
 
-- name: Change kubernetes-dashboard service to NodePort
-  kubernetes.core.k8s_service:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    name: kubernetes-dashboard
-    namespace: kube-system
-    inline:
-      spec:
-        externalTrafficPolicy: Cluster
-        internalTrafficPolicy: Cluster
-        ipFamilies:
-        - IPv4
-        ipFamilyPolicy: SingleStack
-        ports:
-        - nodePort: 32075
-          port: 443
-          protocol: TCP
-          targetPort: 8443
-        selector:
-          k8s-app: kubernetes-dashboard
-        sessionAffinity: None
-        type: NodePort
+#- name: Change kubernetes-dashboard service to NodePort
+#  kubernetes.core.k8s_service:
+#    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+#    state: present
+#    name: kubernetes-dashboard
+#    namespace: kube-system
+#    inline:
+#      spec:
+#        externalTrafficPolicy: Cluster
+#        internalTrafficPolicy: Cluster
+#        ipFamilies:
+#        - IPv4
+#        ipFamilyPolicy: SingleStack
+#        ports:
+#        - nodePort: 32075
+#          port: 443
+#          protocol: TCP
+#          targetPort: 8443
+#        selector:
+#          k8s-app: kubernetes-dashboard
+#        sessionAffinity: None
+#        type: NodePort
 
 - name: Add user to microk8s group
   user:
@@ -134,3 +134,25 @@
         kubeconfig: /var/snap/microk8s/current/credentials/client.config
         state: present
         src: /tmp/nginx-ingress-controller.yml
+
+- name: Expose Dashboard via Ingress
+  kubernetes.core.k8s_service:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    name: kubernetes-dashboard
+    namespace: kube-system
+    inline:
+      spec:
+        externalTrafficPolicy: Cluster
+        internalTrafficPolicy: Cluster
+        ipFamilies:
+        - IPv4
+        ipFamilyPolicy: SingleStack
+        ports:
+        - port: 443
+          protocol: TCP
+          targetPort: 8443
+        selector:
+          k8s-app: kubernetes-dashboard
+        sessionAffinity: None
+        type: ClusterIP
