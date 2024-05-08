@@ -128,3 +128,9 @@
         kubeconfig: /var/snap/microk8s/current/credentials/client.config
         state: present
         src: /tmp/l2advertisement_metallb.yml
+
+    - name: Apply Nginx Ingress Controller
+      kubernetes.core.k8s:
+        kubeconfig: /var/snap/microk8s/current/credentials/client.config
+        state: present
+        src: /tmp/nginx-ingress-controller.yml
