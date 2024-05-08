@@ -9,10 +9,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ nginx_controller_ip.stdout }}.nip.io
+        - 192.168.1.203.nip.io
       secretName: ingress-local-tls
   rules:
-    - host: {{ nginx_controller_ip.stdout }}.nip.io
+    - host: 192.168.1.203.nip.io
       http:
         paths:
           - path: /dashboard
