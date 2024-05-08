@@ -151,11 +151,11 @@
         openssl genrsa -out ca.key 2048
     - name: Create certificate
       shell: |
-        openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN={{ nginx_controller_ip.stdout }}nip.io" -days 1024 -out ca.crt -extensions san -config <(
+        openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN={{ nginx_controller_ip.stdout }}.nip.io" -days 1024 -out ca.crt -extensions san -config <(
         echo '[req]';
         echo 'distinguished_name=req';
         echo '[san]';
-        echo 'subjectAltName=DNS:{{ nginx_controller_ip.stdout }}nip.io')
+        echo 'subjectAltName=DNS:{{ nginx_controller_ip.stdout }}.nip.io')
       
         
       
