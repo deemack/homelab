@@ -144,7 +144,7 @@
     
     - name: print nginx controller ip
       debug:
-        msg: {{ nginx_controller_ip }}
+        msg: "{{ nginx_controller_ip }}"
       
     - name: Create ssl key
       shell: |
