@@ -25,6 +25,9 @@ spec:
               cpu: "500m"
           ports:
             - containerPort: 8081
+              name: webUI
+            - containerPort: 8082
+              name: cli-login
           volumeMounts:
             - name: nexus-data
               mountPath: /nexus-data
