@@ -55,3 +55,16 @@
     state: present
     namespace: homepage
     src: /tmp/service_homepage.yml
+
+- name: Create ingress from template
+  become: true
+  template:
+    src: ingress_homepage.j2
+    dest: /tmp/ingress_homepage.yml
+
+- name: Create Ingress
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: homepage
+    src: /tmp/ingress_homepage.yml
