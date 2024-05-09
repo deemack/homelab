@@ -1,0 +1,7 @@
+---
+- name: Configure Dashboard
+  hosts: beelink
+  become: true
+  gather_facts: true
+  roles:
+    - microk8s_dashboard
