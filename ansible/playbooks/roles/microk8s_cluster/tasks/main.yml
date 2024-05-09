@@ -133,4 +133,10 @@
       kubernetes.core.k8s:
         kubeconfig: /var/snap/microk8s/current/credentials/client.config
         state: present
-        src: /tmp/nginx-ingress-controller.yml     
+        src: /tmp/nginx-ingress-controller.yml
+        
+    - name: Apply Nginx Ingress Controller CongigMap to allow Snippets
+      kubernetes.core.k8s:
+        kubeconfig: /var/snap/microk8s/current/credentials/client.config
+        state: present
+        src: /tmp/nginx-ingress-controller-configmap.yml     
