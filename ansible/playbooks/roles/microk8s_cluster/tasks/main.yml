@@ -133,42 +133,4 @@
       kubernetes.core.k8s:
         kubeconfig: /var/snap/microk8s/current/credentials/client.config
         state: present
-        src: /tmp/nginx-ingress-controller.yml
-
-- name: Create tls secret
-  block:
-    - name: Get IP of Nginx Ingress Controller
-      shell: |
-        microk8s kubectl get services ingress-nginx-controller -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
-      register: nginx_controller_ip
-    
-    - name: print nginx controller ip
-      debug:
-        msg: "{{ nginx_controller_ip }}"
-      
-    - name: Create ssl key
-      shell: |
-        openssl genrsa -out ca.key 2048
-    - name: Create certificate
-      shell:
-        openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN={{ nginx_controller_ip.stdout }}.nip.io" -days 1024 -out ca.crt -extensions san -config <(
-        echo '[req]';
-        echo 'distinguished_name=req';
-        echo '[san]';
-        echo 'subjectAltName=DNS:{{ nginx_controller_ip.stdout }}.nip.io')
-      args:
-        executable: /bin/bash  
-      
-        
-      
-- name: Create Dashboard Service
-  kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    src: /tmp/dashboard-service.yml
-
-- name: Create Dashboard Ingress
-  kubernetes.core.k8s:
-    kubeconfig: /var/snap/microk8s/current/credentials/client.config
-    state: present
-    src: /tmp/dashboard-ingress.yml
+        src: /tmp/nginx-ingress-controller.yml     
