@@ -62,17 +62,17 @@
       shell: |
         microk8s kubectl get services ingress-nginx-controller -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
       register: nginx_controller_ip
-    
+
     - name: print nginx controller ip
       debug:
         msg: "{{ nginx_controller_ip }}"
-      
+
     - name: Create ssl key
       shell: |
         openssl genrsa -out ca.key 2048
       args:
         executable: /bin/bash
-        
+
     - name: Create certificate
       shell:
         openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN={{ nginx_controller_ip.stdout }}.nip.io" -days 1024 -out ca.crt -extensions san -config <(
@@ -82,18 +82,31 @@
         echo 'subjectAltName=DNS:{{ nginx_controller_ip.stdout }}.nip.io')
       args:
         executable: /bin/bash
-        
+
+    - name: remove existing secret
+      shell: |
+        microk8s kubectl delete secrets https-homepage -n homepage --ignore-not-found
+
     - name: Deploy secret to cluster
       shell: |
         microk8s kubectl create secret tls https-homepage   --cert=ca.crt   --key=ca.key -n homepage
 
-- name: Create ingress from template
+    - name: remove key and certificate
+      file:
+        state: absent
+        path: ./*.{{ item}}
+      loop:
+        - key
+        - csr
+        - crt
+        
+- name: Create Ingress from template
   become: true
   template:
     src: ingress_homepage.j2
     dest: /tmp/ingress_homepage.yml
 
-- name: Create Ingress
+- name: Apply Ingress
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
