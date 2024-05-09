@@ -8,7 +8,7 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: dashboard
+    namespace: kube-system
     src: /tmp/service_dashboard.yml
 
 - name: Create tls secret
@@ -40,11 +40,11 @@
 
     - name: remove existing secret
       shell: |
-        microk8s kubectl delete secrets https-dashboard -n dashboard --ignore-not-found
+        microk8s kubectl delete secrets https-dashboard -n kube-system --ignore-not-found
 
     - name: Deploy secret to cluster
       shell: |
-        microk8s kubectl create secret tls https-dashboard   --cert=ca.crt   --key=ca.key -n dashboard
+        microk8s kubectl create secret tls https-dashboard   --cert=ca.crt   --key=ca.key -n kube-system
 
     - name: remove key and certificate
       become: true
@@ -65,5 +65,5 @@
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
-    namespace: dashboard
+    namespace: kube-system
     src: /tmp/ingress_dashboard.yml
