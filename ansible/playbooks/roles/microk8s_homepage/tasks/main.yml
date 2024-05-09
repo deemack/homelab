@@ -92,13 +92,13 @@
         microk8s kubectl create secret tls https-homepage   --cert=ca.crt   --key=ca.key -n homepage
 
     - name: remove key and certificate
+      become: true
       file:
         state: absent
-        path: ./*.{{ item}}
-      loop:
-        - key
-        - csr
-        - crt
+        path: "{{ item }}"
+      with_items:
+        - ca.key
+        - ca.crt
         
 - name: Create Ingress from template
   become: true
@@ -112,5 +112,3 @@
     state: present
     namespace: homepage
     src: /tmp/ingress_homepage.yml
-
-
