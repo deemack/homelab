@@ -3,6 +3,10 @@
   import_playbook: configure_microk8s_cluster.yml
   tags: cluster
 
+- name: Expose Kubernetes Dashboard via Ingress
+  import_playbook: configure_dashboard.yml
+  tags: dashboard
+
 - name: Configure DLNA
   import_playbook: configure_dlna_server.yml
   tags: dlna
