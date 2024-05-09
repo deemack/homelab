@@ -1,0 +1,32 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: nexus-ingress
+  namespace: nexus
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(/nexus)$ $1/ redirect;
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/hsts: 'True'
+    nginx.org/hsts-behind-proxy: 'True'
+    nginx.org/location-snippets: |
+      add_header X-Forwarded-Proto https;
+  labels:
+    name: nexus-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - 192.168.1.203.nip.io
+      secretName: https-nexus
+  rules:
+    - host: 192.168.1.203.nip.io
+      http:
+        paths:
+          - path: /nexus(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: nexus-service
+                port:
+                  number: 8081

@@ -42,9 +42,72 @@
     namespace: nexus
     src: /tmp/deployment_nexus.yml
 
-- name: Create nexus Service
+- name: Create service from template
+  become: true
+  template:
+    src: service_dashboard.j2
+    dest: /tmp/service_dashboard.yml
+
+- name: Create service
   kubernetes.core.k8s:
     kubeconfig: /var/snap/microk8s/current/credentials/client.config
     state: present
     namespace: nexus
-    src: /tmp/service_nexus.yml
+    src: /tmp/service_dashboard.yml
+
+- name: Create tls secret
+  block:
+    - name: Get IP of Nginx Ingress Controller
+      shell: |
+        microk8s kubectl get services ingress-nginx-controller -n ingress-nginx -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
+      register: nginx_controller_ip
+
+    - name: print nginx controller ip
+      debug:
+        msg: "{{ nginx_controller_ip }}"
+
+    - name: Create ssl key
+      shell: |
+        openssl genrsa -out ca.key 2048
+      args:
+        executable: /bin/bash
+
+    - name: Create certificate
+      shell:
+        openssl req -x509 -new -nodes -key ca.key -sha256 -subj "/CN={{ nginx_controller_ip.stdout }}.nip.io" -days 1024 -out ca.crt -extensions san -config <(
+        echo '[req]';
+        echo 'distinguished_name=req';
+        echo '[san]';
+        echo 'subjectAltName=DNS:{{ nginx_controller_ip.stdout }}.nip.io')
+      args:
+        executable: /bin/bash
+
+    - name: remove existing secret
+      shell: |
+        microk8s kubectl delete secrets https-nexus -n nexus --ignore-not-found
+
+    - name: Deploy secret to cluster
+      shell: |
+        microk8s kubectl create secret tls https-nexus  --cert=ca.crt   --key=ca.key -n nexus
+
+    - name: remove key and certificate
+      become: true
+      file:
+        state: absent
+        path: "{{ item }}"
+      with_items:
+        - ca.key
+        - ca.crt
+
+- name: Create Ingress from template
+  become: true
+  template:
+    src: ingress_nexus.j2
+    dest: /tmp/ingress_nexus.yml
+
+- name: Apply Ingress
+  kubernetes.core.k8s:
+    kubeconfig: /var/snap/microk8s/current/credentials/client.config
+    state: present
+    namespace: kube-system
+    src: /tmp/ingress_nexus.yml
